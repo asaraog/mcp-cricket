@@ -6,25 +6,5 @@
   "repository": {
     "url": "https://github.com/asaraog/cricket-mcp",
     "source": "github"
-  },
-  "packages": [
-    {
-      "registryType": "oci",
-      "identifier": "ghcr.io/asaraog/cricket-mcp",
-      "version": "0.1.0",
-      "transport": { "type": "stdio" },
-      "environmentVariables": [
-        {
-          "name": "HISTORY_DB",
-          "description": "Where the ball-by-ball archive lives. Defaults to the OS cache directory; the archive downloads itself on first run.",
-          "isRequired": false
-        },
-        {
-          "name": "HISTORY_QUERY_TIMEOUT",
-          "description": "Deadline for archive queries (default 3s). Raise for heavy leaderboard aggregations.",
-          "isRequired": false
-        }
-      ]
-    }
-  ]
+  }
 }

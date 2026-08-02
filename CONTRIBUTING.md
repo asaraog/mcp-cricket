@@ -26,3 +26,14 @@ Model coefficients are fitted offline and embedded in `internal/explainer`.
 The parity test pins Go's output to the Python fit, so changing coefficients
 means updating both — and the expectations must be regenerated from the fit,
 not copied from Go's output, or the test stops checking anything.
+
+## Publishing to the MCP registry
+
+`server.json` carries the identity fields. The `packages` block is generated
+against the live schema at publish time:
+
+```bash
+mcp-publisher init      # fills packages from the current release
+mcp-publisher login     # GitHub auth proves the io.github.asaraog namespace
+mcp-publisher publish
+```
