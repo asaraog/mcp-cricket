@@ -49,7 +49,9 @@ All tools are read-only.
 
 ### 1. Get the binary
 
-Download the release for your platform, or build it:
+Prebuilt binaries are published for macOS (Apple silicon and Intel), Linux
+(x86-64 and arm64) and Windows — a single static file with no runtime
+dependencies. Or build from source:
 
 ```bash
 go install github.com/asaraog/cricket-mcp/cmd/cricket-mcp@latest
@@ -57,7 +59,14 @@ go install github.com/asaraog/cricket-mcp/cmd/cricket-mcp@latest
 
 ### 2. Configure your MCP client
 
-Add the server to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Add the server to your client's config — for Claude Desktop:
+
+| OS | Config file |
+|----|-------------|
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+| Linux | `~/.config/Claude/claude_desktop_config.json` |
+
 
 ```json
 {
@@ -71,7 +80,8 @@ Add the server to `~/Library/Application Support/Claude/claude_desktop_config.js
 
 Restart the client and the cricket tools appear. **That's the whole setup** —
 on first use the server downloads the prebuilt archive once (~200 MB) into
-your cache directory and reuses it from then on. No account, no API key, no
+your OS cache directory (`~/Library/Caches` on macOS, `~/.cache` on Linux,
+`%LocalAppData%` on Windows) and reuses it from then on. No account, no API key, no
 data pipeline to run.
 
 <details>
