@@ -2,5 +2,7 @@
 /cricket-mcp
 *.db
 *.db.gz
+# ...but the tiny test fixture must ship, or CI has nothing to test
+!internal/history/testdata/fixture.db
 cricsheet/
 .DS_Store
