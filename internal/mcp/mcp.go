@@ -20,9 +20,13 @@ import (
 
 const (
 	ServerName      = "cricket-mcp"
-	ServerVersion   = "0.1.0"
 	defaultProtocol = "2025-06-18"
 )
+
+// ServerVersion is a var, not a const, so the release build can stamp the
+// git tag into it with -ldflags -X. A const would be folded at compile time
+// and the flag would be silently ignored.
+var ServerVersion = "0.1.0"
 
 // ---------------------------------------------------------------- protocol
 
