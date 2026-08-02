@@ -1,5 +1,5 @@
-# Built binaries and local data
-cricket-mcp
+# Built binary (root only — must not match cmd/cricket-mcp/)
+/cricket-mcp
 *.db
 *.db.gz
 cricsheet/
