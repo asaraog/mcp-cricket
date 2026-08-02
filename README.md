@@ -48,39 +48,25 @@ All tools are read-only.
 
 ## 🚀 Quick start
 
-### Option A — install with pip / uv
+### 1. Install
 
-```bash
-uvx cricket-mcp          # no install, runs the latest
-# or
-pip install cricket-mcp
-```
-
-The wheel bundles the same static binary, so there is no Python in the hot
-path: the launcher `exec`s the binary and gets out of the way.
-
-Then register it:
-
-```bash
-# Claude Code
-claude mcp add cricket -- uvx cricket-mcp
-
-# Cursor / Windsurf / Zed: add the same command to their MCP settings
-```
-
-### Option B — the binary directly
-
-### 1. Get the binary
-
-Prebuilt binaries are published for macOS (Apple silicon and Intel), Linux
-(x86-64 and arm64) and Windows — a single static file with no runtime
-dependencies. Or build from source:
+One static binary, no runtime, no interpreter, no dependencies.
 
 ```bash
 go install github.com/asaraog/cricket-mcp/cmd/cricket-mcp@latest
 ```
 
-### Configure a desktop client
+Or download a prebuilt binary for macOS (Apple silicon or Intel), Linux
+(x86-64 or arm64) or Windows from
+[Releases](https://github.com/asaraog/cricket-mcp/releases).
+
+Register it with Claude Code:
+
+```bash
+claude mcp add cricket -- ~/go/bin/cricket-mcp
+```
+
+### 2. Or configure a desktop client
 
 Add the server to your client's config — for Claude Desktop:
 
