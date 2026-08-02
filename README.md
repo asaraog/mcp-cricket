@@ -47,34 +47,15 @@ All tools are read-only.
 
 ## 🚀 Quick start
 
-### Prerequisites
+### 1. Get the binary
 
-- Go 1.25+
-- Python 3 (once, to build the archive)
-- An MCP-compatible client (e.g. Claude for Desktop)
-
-### 1. Build
+Download the release for your platform, or build it:
 
 ```bash
-git clone https://github.com/asaraog/cricket-mcp.git
-cd cricket-mcp
-go build -o cricket-mcp ./cmd/cricket-mcp
+go install github.com/asaraog/cricket-mcp/cmd/cricket-mcp@latest
 ```
 
-### 2. Build the archive
-
-Download the Cricsheet dataset and turn it into the query database. This takes
-a few minutes and produces roughly 800 MB.
-
-```bash
-curl -O https://cricsheet.org/downloads/all_json.zip
-python3 scripts/histgen.py all_json.zip history.db
-```
-
-Limited-overs only (smaller, faster) is also fine — the tools degrade
-gracefully when a format is missing.
-
-### 3. Configure your MCP client
+### 2. Configure your MCP client
 
 Add the server to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
@@ -82,17 +63,31 @@ Add the server to `~/Library/Application Support/Claude/claude_desktop_config.js
 {
   "mcpServers": {
     "cricket": {
-      "command": "/ABSOLUTE/PATH/TO/cricket-mcp",
-      "env": {
-        "HISTORY_DB": "/ABSOLUTE/PATH/TO/history.db",
-        "HISTORY_QUERY_TIMEOUT": "15s"
-      }
+      "command": "/ABSOLUTE/PATH/TO/cricket-mcp"
     }
   }
 }
 ```
 
-Restart the client and the cricket tools appear.
+Restart the client and the cricket tools appear. **That's the whole setup** —
+on first use the server downloads the prebuilt archive once (~200 MB) into
+your cache directory and reuses it from then on. No account, no API key, no
+data pipeline to run.
+
+<details>
+<summary>Building the archive yourself instead</summary>
+
+The archive is generated from public [Cricsheet](https://cricsheet.org) data,
+so you can build your own rather than downloading ours:
+
+```bash
+curl -O https://cricsheet.org/downloads/all_json.zip
+python3 scripts/histgen.py all_json.zip history.db
+```
+
+Then point `HISTORY_DB` at the result. Limited-overs-only archives work too —
+tools degrade gracefully when a format is absent.
+</details>
 
 ## 💬 Example prompts
 
@@ -107,8 +102,8 @@ Restart the client and the cricket tools appear.
 
 | Variable | Purpose |
 |----------|---------|
-| `HISTORY_DB` | Path to the archive database (required for archive tools) |
-| `HISTORY_DB_URL` | Optional URL to download a prebuilt archive on first run |
+| `HISTORY_DB` | Where the archive lives (default: your OS cache directory) |
+| `HISTORY_DB_URL` | Override the archive download URL |
 | `HISTORY_DB_TOKEN` | Bearer token, if that URL needs auth |
 | `HISTORY_QUERY_TIMEOUT` | Query deadline, default `3s`; raise for heavy leaderboards |
 

@@ -33,10 +33,26 @@ var (
 // The DB is a private GitHub release asset; a fresh instance without the
 // file (Render's disk is wiped on every deploy/spin-down) downloads it
 // once at startup using the same token the log mirror uses.
-// defaultAssetURL is empty in the open-source build: users generate the
-// archive themselves with scripts/histgen.py, or point HISTORY_DB_URL at
-// their own copy.
-const defaultAssetURL = ""
+// defaultAssetURL is the prebuilt archive published with this project's
+// releases. Nothing to build and no account to create: on first run the
+// server downloads it once (~200 MB compressed) and reuses it forever
+// after. Override with HISTORY_DB_URL, or skip the download entirely by
+// pointing HISTORY_DB at an archive you generated yourself.
+const defaultAssetURL = "https://github.com/asaraog/cricket-mcp/releases/latest/download/cricket-archive.db.gz"
+
+// defaultArchivePath returns ~/.cache/cricket-mcp/history.db (or the OS
+// equivalent), creating the directory when needed.
+func defaultArchivePath() string {
+	dir, err := os.UserCacheDir()
+	if err != nil {
+		return "history.db"
+	}
+	dir = filepath.Join(dir, "cricket-mcp")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return "history.db"
+	}
+	return filepath.Join(dir, "history.db")
+}
 
 func fetchDB(dst string) bool {
 	url := os.Getenv("HISTORY_DB_URL")
@@ -55,7 +71,8 @@ func fetchDB(dst string) bool {
 	if tok := os.Getenv("HISTORY_DB_TOKEN"); tok != "" {
 		req.Header.Set("Authorization", "Bearer "+tok)
 	}
-	client := &http.Client{Timeout: 5 * time.Minute}
+	log.Printf("history: first run — downloading the cricket archive (~200 MB, once) from %s", url)
+	client := &http.Client{Timeout: 30 * time.Minute}
 	resp, err := client.Do(req)
 	if err != nil {
 		return false
@@ -90,11 +107,11 @@ func fetchDB(dst string) bool {
 func open() {
 	path := os.Getenv("HISTORY_DB")
 	if path == "" {
-		path = "history.db"
+		// Default to a durable per-user location so the one-time
+		// download survives reboots — a temp directory would make the
+		// user pay for it again after every cleanup.
+		path = defaultArchivePath()
 	}
-	// With a persistent disk mounted (HISTORY_DB under it), the archive
-	// is downloaded once on first boot and then survives every deploy —
-	// images stay small, restarts stay instant.
 	if _, err := os.Stat(path); err != nil {
 		// Prefer fetching into the configured path (a mounted disk keeps
 		// it); fall back to temp when that location is not writable.
