@@ -1,5 +1,13 @@
 # 🏏 Cricket MCP Server
 
+[![MCP](https://img.shields.io/badge/MCP-server-blue)](https://modelcontextprotocol.io)
+[![Go](https://img.shields.io/badge/go-1.25%2B-00ADD8)](https://go.dev)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-green)](LICENSE)
+
+> Cricket analytics for Claude Desktop, Claude Code, Cursor and any other MCP
+> client — a calibrated win-probability model, 22,479 archived matches, and
+> live prediction-market prices.
+
 A [Model Context Protocol](https://modelcontextprotocol.io) server that gives
 AI assistants real cricket knowledge: a **calibrated win-probability model**, a
 **ball-by-ball archive of 22,000+ matches**, career records, and live scores.
