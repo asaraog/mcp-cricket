@@ -132,7 +132,7 @@ func getJSON(url string, out any) error {
 	if err != nil {
 		return err
 	}
-	req.Header.Set("User-Agent", "what-wicket/0.1 (personal cricket explainer)")
+	req.Header.Set("User-Agent", "cricket-mcp/0.1 (+https://github.com/asaraog/cricket-mcp)")
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
