@@ -1,0 +1,6 @@
+# Built binaries and local data
+cricket-mcp
+*.db
+*.db.gz
+cricsheet/
+.DS_Store
