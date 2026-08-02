@@ -40,6 +40,7 @@ Most sports MCP servers wrap a scores API. This one ships analysis:
 | `cricket_venue_stats` | Ground report: average first-innings score, chase win rate |
 | `cricket_leaders` | League and season leaderboards for runs or wickets |
 | `cricket_team_form` | A team's recent archived results |
+| `cricket_market_odds` | Live prediction-market prices (Kalshi) beside this model's number |
 | `cricket_live_matches` | Matches live and upcoming right now |
 | `cricket_explain_term` | Any cricket term, with its baseball equivalent |
 
@@ -107,6 +108,7 @@ tools degrade gracefully when a format is absent.
 - *"Show me Pooran's death-overs record."*
 - *"Who led the IPL run charts?"*
 - *"What actually is a googly?"*
+- *"What does the market think versus your model for Welsh Fire vs Southern Brave?"*
 
 ## ⚙️ Configuration
 
@@ -130,11 +132,24 @@ about one point across most of the range.
 
 It cannot see injuries, weather, pitch reports or team news.
 
+## 📈 Markets
+
+`cricket_market_odds` reads public prices from [Kalshi](https://kalshi.com), a
+CFTC-regulated US exchange where contracts settle at $1 and a price in cents
+*is* the implied probability. Put beside `cricket_win_probability`, the gap
+between the two is the edge a trader would be claiming.
+
+This is informational only — read-only market data, no account, no orders, no
+advice. The model cannot see injuries, weather or team news, which is often
+exactly why it disagrees with the market. Event contracts are legal in some
+jurisdictions and not others.
+
 ## 🙏 Data
 
 Ball-by-ball data from [Cricsheet](https://cricsheet.org), licensed
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Live scores
-from public ESPNcricinfo endpoints. This project is unaffiliated with either.
+from public ESPNcricinfo endpoints; market prices from Kalshi's public API.
+This project is unaffiliated with any of them.
 
 ## 📝 License
 

@@ -9,11 +9,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/asaraog/cricket-mcp/internal/cricinfo"
 	"github.com/asaraog/cricket-mcp/internal/explainer"
 	"github.com/asaraog/cricket-mcp/internal/glossary"
 	"github.com/asaraog/cricket-mcp/internal/history"
+	"github.com/asaraog/cricket-mcp/internal/kalshi"
 	"github.com/asaraog/cricket-mcp/internal/matchup"
 	"github.com/asaraog/cricket-mcp/internal/rag"
 )
@@ -25,7 +27,6 @@ const (
 )
 
 // ---------------------------------------------------------------- protocol
-
 
 type Request struct {
 	JSONRPC string          `json:"jsonrpc"`
@@ -43,7 +44,7 @@ type Response struct {
 	JSONRPC string          `json:"jsonrpc"`
 	ID      json.RawMessage `json:"id,omitempty"`
 	Result  any             `json:"result,omitempty"`
-	Error   *rpcErr       `json:"error,omitempty"`
+	Error   *rpcErr         `json:"error,omitempty"`
 }
 
 // Tool is one callable capability plus its JSON Schema.
@@ -256,6 +257,15 @@ func buildTools() []Tool {
 				"limit": inte("how many recent matches (default 8)"),
 			}, "team"),
 			handler: teamFormTool,
+		},
+		{
+			Name:        "cricket_market_odds",
+			Description: "Live prediction-market prices for a cricket match from Kalshi (a CFTC-regulated US exchange), shown beside this server's own win probability so the two can be compared. Prices are cents that equal implied probability: 42 means the market prices a 42% chance. Informational only — not betting advice, and event contracts are legal only in some jurisdictions.",
+			InputSchema: obj(map[string]any{
+				"team_a": str("one team, e.g. 'San Francisco Unicorns'"),
+				"team_b": str("the other team, e.g. 'Guyana Amazon Warriors'"),
+			}, "team_a", "team_b"),
+			handler: marketOddsTool,
 		},
 		{
 			Name:        "cricket_live_matches",
@@ -483,6 +493,37 @@ func teamFormTool(args map[string]any) (string, error) {
 		b.WriteString("\n")
 	}
 	return b.String(), nil
+}
+
+func marketOddsTool(args map[string]any) (string, error) {
+	a, b := argStr(args, "team_a"), argStr(args, "team_b")
+	if a == "" || b == "" {
+		return "", fmt.Errorf("need team_a and team_b")
+	}
+	// The exchange scan is a background crawl; on a freshly started server
+	// the first lookup would otherwise fail while it warms. Wait briefly
+	// rather than reporting a market that does exist as missing.
+	set, _, _, ok := kalshi.FindEventForTeams(a, b)
+	for i := 0; !ok && i < 12; i++ {
+		time.Sleep(5 * time.Second)
+		set, _, _, ok = kalshi.FindEventForTeams(a, b)
+	}
+	if !ok || len(set.Markets) == 0 {
+		return "", fmt.Errorf("no open market found for %s v %s — the exchange lists only some fixtures, mostly current T20 leagues", a, b)
+	}
+	var out strings.Builder
+	fmt.Fprintf(&out, "Prediction-market prices for %s v %s:\n", a, b)
+	for _, mk := range set.Markets {
+		m := kalshi.WithQuotes(mk)
+		if m.HasQuotes() {
+			fmt.Fprintf(&out, "  %s — %.0f%% implied (%.0f cents)\n", m.Title, m.ImpliedProb*100, m.ImpliedProb*100)
+			continue
+		}
+		fmt.Fprintf(&out, "  %s — listed, no trades yet\n", m.Title)
+	}
+	out.WriteString("\nA price is the crowd's implied probability. To judge whether it looks rich or cheap, compare it with cricket_win_probability for the current match state: the difference between the two is the edge a trader would be claiming. Remember the market can see injuries, weather and team news that a state-based model cannot.\n")
+	out.WriteString("Informational only, not advice. Event contracts are legal in some US states and not others.")
+	return out.String(), nil
 }
 
 func explainTermTool(args map[string]any) (string, error) {
