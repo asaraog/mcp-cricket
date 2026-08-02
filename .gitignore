@@ -4,3 +4,7 @@
 *.db.gz
 cricsheet/
 .DS_Store
+python/cricket_mcp/bin/
+python/dist/
+python/build/
+python/*.egg-info/
