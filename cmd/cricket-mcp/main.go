@@ -1,9 +1,8 @@
-// Command mcp serves Cricket for Noobs' cricket data over the Model
-// Context Protocol on stdin/stdout, for MCP clients that launch a local
-// server (Claude Desktop's local config). The hosted HTTP endpoint on
-// the website serves the same tools without users installing anything.
+// Command cricket-mcp serves cricket data over the Model Context
+// Protocol on stdin/stdout, for MCP clients that launch a local server
+// (Claude Desktop, Claude Code, Cursor).
 //
-//	go build ./cmd/mcp && HISTORY_DB=/path/history.db ./mcp
+//	go build ./cmd/cricket-mcp && ./cricket-mcp
 package main
 
 import (

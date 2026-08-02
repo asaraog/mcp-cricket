@@ -1,8 +1,6 @@
-// Package mcp implements the Model Context Protocol surface for Cricket
-// for Noobs: the tool set (win model, archive, matchups, live scores)
-// plus JSON-RPC handling, shared by the stdio binary and the HTTP
-// endpoint the website serves. Keeping tools here means the hosted
-// server can stay private while remaining usable from any MCP client.
+// Package mcp implements the Model Context Protocol surface for this
+// server: the tool set (win model, archive, matchups, live scores,
+// market prices) plus JSON-RPC handling.
 package mcp
 
 import (
@@ -21,7 +19,7 @@ import (
 )
 
 const (
-	ServerName      = "cricket-for-noobs"
+	ServerName      = "cricket-mcp"
 	ServerVersion   = "0.1.0"
 	defaultProtocol = "2025-06-18"
 )
