@@ -9,8 +9,8 @@ package rag
 import (
 	"fmt"
 
-	"github.com/asaraog/cricket-mcp/internal/commentary"
-	"github.com/asaraog/cricket-mcp/internal/glossary"
+	"github.com/asaraog/mcp-cricket/internal/commentary"
+	"github.com/asaraog/mcp-cricket/internal/glossary"
 )
 
 // Doc is one retrievable knowledge chunk.

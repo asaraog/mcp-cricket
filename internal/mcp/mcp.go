@@ -9,13 +9,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/asaraog/cricket-mcp/internal/cricinfo"
-	"github.com/asaraog/cricket-mcp/internal/explainer"
-	"github.com/asaraog/cricket-mcp/internal/glossary"
-	"github.com/asaraog/cricket-mcp/internal/history"
-	"github.com/asaraog/cricket-mcp/internal/kalshi"
-	"github.com/asaraog/cricket-mcp/internal/matchup"
-	"github.com/asaraog/cricket-mcp/internal/rag"
+	"github.com/asaraog/mcp-cricket/internal/cricinfo"
+	"github.com/asaraog/mcp-cricket/internal/explainer"
+	"github.com/asaraog/mcp-cricket/internal/glossary"
+	"github.com/asaraog/mcp-cricket/internal/history"
+	"github.com/asaraog/mcp-cricket/internal/kalshi"
+	"github.com/asaraog/mcp-cricket/internal/matchup"
+	"github.com/asaraog/mcp-cricket/internal/rag"
 )
 
 const (

@@ -33,7 +33,7 @@ jobs:
         run: |
           out=cricket-mcp-${{ matrix.goos }}-${{ matrix.goarch }}
           [ "${{ matrix.goos }}" = windows ] && out="$out.exe"
-          go build -trimpath -ldflags="-s -w -X github.com/asaraog/cricket-mcp/internal/mcp.ServerVersion=${GITHUB_REF_NAME#v}" -o "$out" ./cmd/cricket-mcp
+          go build -trimpath -ldflags="-s -w -X github.com/asaraog/mcp-cricket/internal/mcp.ServerVersion=${GITHUB_REF_NAME#v}" -o "$out" ./cmd/cricket-mcp
           echo "ASSET=$out" >> "$GITHUB_ENV"
       - name: Attach to release
         uses: softprops/action-gh-release@v2

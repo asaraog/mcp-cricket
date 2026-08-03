@@ -1,4 +1,4 @@
-module github.com/asaraog/cricket-mcp
+module github.com/asaraog/mcp-cricket
 
 go 1.25.0
 

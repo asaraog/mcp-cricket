@@ -1,10 +1,10 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
-  "name": "io.github.asaraog/cricket-mcp",
+  "name": "io.github.asaraog/mcp-cricket",
   "description": "Cricket analytics for AI assistants: a calibrated win-probability model fitted on 17,907 matches, a ball-by-ball archive of 22,479 matches, career and batter-vs-bowler records, phase and venue analysis, live scores, and prediction-market prices.",
   "version": "0.1.0",
   "repository": {
-    "url": "https://github.com/asaraog/cricket-mcp",
+    "url": "https://github.com/asaraog/mcp-cricket",
     "source": "github"
   }
 }

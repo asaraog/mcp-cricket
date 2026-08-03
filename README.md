@@ -61,12 +61,12 @@ All tools are read-only.
 One static binary, no runtime, no interpreter, no dependencies.
 
 ```bash
-go install github.com/asaraog/cricket-mcp/cmd/cricket-mcp@latest
+go install github.com/asaraog/mcp-cricket/cmd/cricket-mcp@latest
 ```
 
 Or download a prebuilt binary for macOS (Apple silicon or Intel), Linux
 (x86-64 or arm64) or Windows from
-[Releases](https://github.com/asaraog/cricket-mcp/releases).
+[Releases](https://github.com/asaraog/mcp-cricket/releases).
 
 Register it with Claude Code:
 

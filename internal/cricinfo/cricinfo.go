@@ -20,7 +20,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/asaraog/cricket-mcp/internal/explainer"
+	"github.com/asaraog/mcp-cricket/internal/explainer"
 )
 
 const (
@@ -132,7 +132,7 @@ func getJSON(url string, out any) error {
 	if err != nil {
 		return err
 	}
-	req.Header.Set("User-Agent", "cricket-mcp/0.1 (+https://github.com/asaraog/cricket-mcp)")
+	req.Header.Set("User-Agent", "cricket-mcp/0.1 (+https://github.com/asaraog/mcp-cricket)")
 	resp, err := client.Do(req)
 	if err != nil {
 		return err

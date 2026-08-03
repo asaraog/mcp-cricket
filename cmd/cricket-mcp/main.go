@@ -11,7 +11,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/asaraog/cricket-mcp/internal/mcp"
+	"github.com/asaraog/mcp-cricket/internal/mcp"
 )
 
 func main() {

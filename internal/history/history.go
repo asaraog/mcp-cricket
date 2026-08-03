@@ -38,7 +38,7 @@ var (
 // server downloads it once (~200 MB compressed) and reuses it forever
 // after. Override with HISTORY_DB_URL, or skip the download entirely by
 // pointing HISTORY_DB at an archive you generated yourself.
-const defaultAssetURL = "https://github.com/asaraog/cricket-mcp/releases/latest/download/cricket-archive.db.gz"
+const defaultAssetURL = "https://github.com/asaraog/mcp-cricket/releases/latest/download/cricket-archive.db.gz"
 
 // defaultArchivePath returns ~/.cache/cricket-mcp/history.db (or the OS
 // equivalent), creating the directory when needed.
