@@ -6,8 +6,8 @@
 package history
 
 import (
-	"context"
 	"compress/gzip"
+	"context"
 	"database/sql"
 	"fmt"
 	"io"
@@ -24,8 +24,8 @@ import (
 )
 
 var (
-	once  sync.Once
-	db    *sql.DB
+	once      sync.Once
+	db        *sql.DB
 	teams     []string          // distinct team names, for entity spotting
 	teamWords map[string]string // distinctive single word -> unique team
 )

@@ -79,11 +79,11 @@ func PhaseStats(name string, totalOvers int) (batting, bowling []PhaseSplit, ok 
 
 // VenueReport describes how a ground plays.
 type VenueReport struct {
-	Venue       string
-	Matches     int
-	AvgFirst    float64
-	ChaseWins   int
-	Decided     int
+	Venue        string
+	Matches      int
+	AvgFirst     float64
+	ChaseWins    int
+	Decided      int
 	HighestFirst int
 }
 

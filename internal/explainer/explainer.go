@@ -14,17 +14,21 @@ const BallsPerOver = 6
 
 // OversToBalls converts cricket overs notation (16.2 = 16 overs + 2 balls,
 // NOT 16.2 decimal) to a ball count.
-func OversToBalls(overs float64) (int, error) {
+func OversToBalls(overs float64) (int, error) { return OversToBallsN(overs, BallsPerOver) }
+
+// OversToBallsN is OversToBalls for formats whose over is not six balls —
+// The Hundred bowls five-ball sets, and 13.5 there means 70 balls, not 83.
+func OversToBallsN(overs float64, bpo int) (int, error) {
 	whole := int(overs)
 	balls := int(math.Round((overs - float64(whole)) * 10))
 	// ESPN writes a just-completed over as x.6 — that's x+1 whole overs.
-	if balls == BallsPerOver {
+	if balls == bpo {
 		whole, balls = whole+1, 0
 	}
-	if balls < 0 || balls >= BallsPerOver {
+	if balls < 0 || balls >= bpo {
 		return 0, fmt.Errorf("invalid overs notation: %v (digit after the point must be 0-5)", overs)
 	}
-	return whole*BallsPerOver + balls, nil
+	return whole*bpo + balls, nil
 }
 
 // BallsToOversStr renders a ball count in cricket notation.
@@ -43,10 +47,22 @@ type MatchState struct {
 	Innings     int     `json:"innings"`
 	Target      *int    `json:"target,omitempty"` // runs needed to win (chase)
 	Notes       string  `json:"notes,omitempty"`
+	// BPO is balls per over: zero means the standard six. The Hundred is
+	// five, and every balls-left and run-rate figure below flows from it —
+	// with six assumed, a Hundred innings was priced and narrated as 120
+	// deliveries when only 100 exist.
+	BPO int `json:"balls_per_over,omitempty"`
+}
+
+func (s MatchState) bpo() int {
+	if s.BPO > 0 {
+		return s.BPO
+	}
+	return BallsPerOver
 }
 
 func (s MatchState) BallsBowled() int {
-	b, err := OversToBalls(s.Overs)
+	b, err := OversToBallsN(s.Overs, s.bpo())
 	if err != nil {
 		return 0
 	}
@@ -54,7 +70,7 @@ func (s MatchState) BallsBowled() int {
 }
 
 func (s MatchState) BallsLeft() int {
-	left := s.TotalOvers*BallsPerOver - s.BallsBowled()
+	left := s.TotalOvers*s.bpo() - s.BallsBowled()
 	if left < 0 {
 		return 0
 	}
@@ -67,7 +83,7 @@ func (s MatchState) CurrentRunRate() float64 {
 	if s.BallsBowled() == 0 {
 		return 0
 	}
-	return float64(s.Runs) / float64(s.BallsBowled()) * BallsPerOver
+	return float64(s.Runs) / float64(s.BallsBowled()) * float64(s.bpo())
 }
 
 // RequiredRunRate returns (rate, true) during a chase with balls remaining.
@@ -79,7 +95,7 @@ func (s MatchState) RequiredRunRate() (float64, bool) {
 	if needed < 0 {
 		needed = 0
 	}
-	return needed / float64(s.BallsLeft()) * BallsPerOver, true
+	return needed / float64(s.BallsLeft()) * float64(s.bpo()), true
 }
 
 // ParScore is a very rough par first-innings total by format.
@@ -95,7 +111,7 @@ func ProjectedScore(s MatchState) int {
 		return ParScore(s.TotalOvers)
 	}
 	damping := 0.6 + 0.04*float64(s.WicketsInHand())
-	rest := s.CurrentRunRate() * damping * (float64(s.BallsLeft()) / BallsPerOver)
+	rest := s.CurrentRunRate() * damping * (float64(s.BallsLeft()) / float64(s.bpo()))
 	return int(math.Round(float64(s.Runs) + rest))
 }
 

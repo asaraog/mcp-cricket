@@ -9,9 +9,9 @@ package cricinfo
 
 import (
 	"encoding/json"
-	"html"
 	"encoding/xml"
 	"fmt"
+	"html"
 	"io"
 	"net/http"
 	"regexp"
@@ -157,10 +157,10 @@ type ListedMatch struct {
 	Link     string `json:"link,omitempty"`
 	// HasScores marks live matches whose feed actually carries score
 	// strings; ESPN lists minor fixtures as "in" with empty scoreboards.
-	HasScores *bool  `json:"has_scores,omitempty"`
+	HasScores *bool `json:"has_scores,omitempty"`
 	// Date is the scheduled start (ISO, UTC) straight from the feed.
-	Date string `json:"date,omitempty"`
-	Source   string `json:"source"` // espn | rss
+	Date   string `json:"date,omitempty"`
+	Source string `json:"source"` // espn | rss
 	// Phase is the discovery feed's status word ("Stumps", "Lunch") — a
 	// Test can be state "in" while play is paused for the day.
 	Phase string `json:"phase,omitempty"`
@@ -634,7 +634,7 @@ func LatestBalls(leagueID, eventID string, n int) ([]Ball, error) {
 // PlayerLine is one player's live scorecard line from the summary rosters.
 type PlayerLine struct {
 	Name, Team string
-	Active     bool // on the field right now (at the crease / bowling)
+	Active     bool   // on the field right now (at the crease / bowling)
 	Out        string // dismissal, cricket-style: "c Robinson b Gore (over 8.3)"
 	Batted     bool
 	Runs       int
@@ -914,6 +914,21 @@ func ParseScoreString(score string) (runs, wickets int, overs *float64, ok bool)
 // ToMatchState converts a simplified match into an explainer.MatchState.
 // Tuned for limited-overs cricket; returns nil for multi-day Tests rather
 // than mis-reading them as a T20 chase.
+// LeagueIsHundred reports whether a league is The Hundred, whose overs are
+// five balls: every balls-left, run-rate and win-model figure changes with
+// it, and with six assumed a Hundred innings was priced as 120 deliveries.
+func LeagueIsHundred(leagueID string) bool {
+	if leagueID == "" {
+		return false
+	}
+	for _, lm := range LiveMatches() {
+		if lm.LeagueID == leagueID {
+			return strings.Contains(strings.ToLower(lm.League), "hundred")
+		}
+	}
+	return false
+}
+
 func ToMatchState(m Match) *explainer.MatchState {
 	if len(m.Teams) != 2 || IsTestMatch(m) {
 		return nil
@@ -984,6 +999,9 @@ func ToMatchState(m Match) *explainer.MatchState {
 			state.Innings = 2
 			state.Target = &v
 		}
+	}
+	if LeagueIsHundred(m.LeagueID) {
+		state.BPO = 5
 	}
 	return &state
 }

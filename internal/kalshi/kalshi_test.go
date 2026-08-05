@@ -105,10 +105,10 @@ func TestParseTradesJSON(t *testing.T) {
 
 func TestNormalizeTicker(t *testing.T) {
 	cases := map[string]string{
-		"KXTEST-26X": "KXTEST-26X",
+		"KXTEST-26X":   "KXTEST-26X",
 		" kxtest-26x ": "KXTEST-26X",
 		"https://kalshi.com/markets/kxtestmatch/mens-test-cricket-match/kxtestmatch-26jul251100pakwi": "KXTESTMATCH-26JUL251100PAKWI",
-		"https://kalshi.com/markets/x/y/kxfoo-1?ref=abc": "KXFOO-1",
+		"https://kalshi.com/markets/x/y/kxfoo-1?ref=abc":                                              "KXFOO-1",
 	}
 	for in, want := range cases {
 		if got := NormalizeTicker(in); got != want {

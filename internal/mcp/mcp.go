@@ -185,14 +185,15 @@ func buildTools() []Tool {
 			Name:        "cricket_win_probability",
 			Description: "Win probability for a live or hypothetical limited-overs match state, from a logistic model fitted on 8,000+ archived matches (per format and innings, with pre-match Elo). Returns the batting side's probability and who is favored. Use for 'who is winning' or 'what are the odds at X/Y'.",
 			InputSchema: obj(map[string]any{
-				"runs":         inte("runs scored so far by the batting side"),
-				"wickets":      inte("wickets lost so far (0-10)"),
-				"overs":        num("overs bowled in cricket notation, e.g. 15.3 = 15 overs 3 balls"),
-				"total_overs":  inte("overs per side: 20 for T20, 50 for ODI"),
-				"innings":      inte("1 for the side setting a target, 2 for the chase"),
-				"target":       inte("runs needed to win (second innings only)"),
-				"batting_team": str("optional team name, improves the estimate via Elo"),
-				"bowling_team": str("optional team name, improves the estimate via Elo"),
+				"runs":           inte("runs scored so far by the batting side"),
+				"wickets":        inte("wickets lost so far (0-10)"),
+				"overs":          num("overs bowled in cricket notation, e.g. 15.3 = 15 overs 3 balls"),
+				"total_overs":    inte("overs per side: 20 for T20 and The Hundred, 50 for ODI"),
+				"balls_per_over": inte("balls per over: 6 unless The Hundred, which bowls 5-ball sets — pass 5 there or every rate is a fifth off"),
+				"innings":        inte("1 for the side setting a target, 2 for the chase"),
+				"target":         inte("runs needed to win (second innings only)"),
+				"batting_team":   str("optional team name, improves the estimate via Elo"),
+				"bowling_team":   str("optional team name, improves the estimate via Elo"),
 			}, "runs", "wickets", "overs", "total_overs", "innings"),
 			handler: winProbTool,
 		},
@@ -300,6 +301,9 @@ func winProbTool(args map[string]any) (string, error) {
 		TotalOvers: total, Innings: inn,
 		BattingTeam: argStr(args, "batting_team"),
 		BowlingTeam: argStr(args, "bowling_team"),
+	}
+	if bpo, ok := argInt(args, "balls_per_over"); ok && bpo == 5 {
+		st.BPO = 5
 	}
 	if st.BattingTeam == "" {
 		st.BattingTeam = "batting side"

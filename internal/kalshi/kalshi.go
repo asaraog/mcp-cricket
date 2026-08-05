@@ -689,12 +689,12 @@ func Prewarm() {
 
 // Comparison lines a Kalshi market price up against a model probability.
 type Comparison struct {
-	Market          Market  `json:"market"`
-	MarketProb      float64 `json:"market_prob"`
-	ModelProb       float64 `json:"model_prob,omitempty"`
-	ModelTeam       string  `json:"model_team,omitempty"`
-	Edge            float64 `json:"edge,omitempty"`
-	Read            string  `json:"read"`
+	Market     Market  `json:"market"`
+	MarketProb float64 `json:"market_prob"`
+	ModelProb  float64 `json:"model_prob,omitempty"`
+	ModelTeam  string  `json:"model_team,omitempty"`
+	Edge       float64 `json:"edge,omitempty"`
+	Read       string  `json:"read"`
 }
 
 // Compare builds the comparison. modelProb may be <0 to mean "no model view"
