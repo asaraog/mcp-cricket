@@ -1,1 +1,850 @@
-{"20": {"Australia": [1722.8, 220], "New Zealand": [1656.9, 251], "England": [1786.7, 214], "South Africa": [1675.0, 223], "West Indies": [1599.1, 230], "Sri Lanka": [1544.4, 220], "Pakistan": [1708.5, 278], "India": [1784.7, 270], "Kenya": [1588.9, 98], "Bangladesh": [1553.3, 195], "Scotland": [1538.1, 93], "Zimbabwe": [1557.9, 173], "Kolkata Knight Riders": [1522.2, 276], "Royal Challengers Bangalore": [1537.4, 237], "Chennai Super Kings": [1479.6, 265], "Kings XI Punjab": [1478.5, 190], "Rajasthan Royals": [1519.6, 249], "Delhi Daredevils": [1457.6, 159], "Mumbai Indians": [1468.1, 291], "Deccan Chargers": [1430.3, 75], "Bermuda": [1623.0, 48], "Ireland": [1573.9, 145], "Netherlands": [1537.2, 115], "Canada": [1577.7, 73], "Kochi Tuskers Kerala": [1481.5, 14], "Pune Warriors": [1367.7, 45], "Brisbane Heat": [1509.1, 161], "Sydney Sixers": [1586.3, 170], "Melbourne Stars": [1465.0, 165], "Sydney Thunder": [1437.4, 156], "Adelaide Strikers": [1448.5, 161], "Melbourne Renegades": [1390.1, 157], "Hobart Hurricanes": [1553.9, 159], "Perth Scorchers": [1609.7, 173], "Sunrisers Hyderabad": [1547.2, 210], "Barbados Tridents": [1454.6, 77], "St Lucia Zouks": [1509.2, 53], "Guyana Amazon Warriors": [1601.6, 144], "Trinidad & Tobago Red Steel": [1560.4, 29], "Antigua Hawksbills": [1416.8, 15], "Jamaica Tallawahs": [1504.2, 115], "Nepal": [1657.5, 113], "Hong Kong": [1572.1, 120], "United Arab Emirates": [1586.6, 124], "St Kitts and Nevis Patriots": [1409.7, 108], "Papua New Guinea": [1550.7, 63], "Oman": [1524.1, 103], "Islamabad United": [1524.2, 123], "Quetta Gladiators": [1471.2, 112], "Lahore Qalandars": [1524.0, 116], "Karachi Kings": [1469.5, 113], "Peshawar Zalmi": [1585.4, 123], "Rising Pune Supergiants": [1473.0, 14], "Gujarat Lions": [1468.8, 30], "Trinbago Knight Riders": [1618.8, 116], "Rising Pune Supergiant": [1554.5, 16], "St Lucia Stars": [1411.1, 18], "ICC World XI": [1487.1, 4], "Multan Sultans": [1485.7, 98], "United States of America": [1587.8, 52], "Philippines": [1474.0, 43], "Vanuatu": [1413.3, 37], "Delhi Capitals": [1528.7, 118], "Ghana": [1462.9, 42], "Namibia": [1588.7, 94], "Uganda": [1775.3, 102], "Botswana": [1472.0, 56], "Nigeria": [1517.7, 93], "Germany": [1555.9, 64], "Italy": [1558.0, 38], "Guernsey": [1562.9, 40], "Jersey": [1653.8, 49], "Denmark": [1572.2, 48], "Norway": [1515.7, 56], "Thailand": [1384.7, 62], "Malaysia": [1621.9, 114], "Maldives": [1359.6, 37], "Singapore": [1441.9, 72], "Qatar": [1557.8, 58], "Kuwait": [1546.5, 67], "Cayman Islands": [1539.1, 41], "Portugal": [1645.1, 41], "Spain": [1689.3, 41], "Gibraltar": [1358.5, 57], "Bhutan": [1405.2, 43], "Saudi Arabia": [1535.7, 49], "Bahrain": [1621.4, 110], "Iran": [1487.6, 1], "Isle of Man": [1481.1, 21], "Belgium": [1588.4, 45], "Luxembourg": [1419.1, 44], "Czech Republic": [1482.0, 38], "Bulgaria": [1361.0, 50], "Romania": [1581.1, 70], "Punjab Kings": [1523.8, 85], "Austria": [1624.2, 80], "Greece": [1424.9, 9], "Serbia": [1315.1, 38], "Malta": [1451.6, 77], "France": [1517.7, 48], "Sweden": [1542.9, 49], "Rwanda": [1500.2, 100], "Finland": [1514.3, 40], "Barbados Royals": [1466.3, 52], "St Lucia Kings": [1557.6, 53], "Hungary": [1428.7, 48], "Estonia": [1423.9, 34], "Cyprus": [1471.2, 41], "Seychelles": [1399.1, 16], "Malawi": [1443.1, 40], "Lesotho": [1346.9, 21], "Swaziland": [1443.6, 5], "Sierra Leone": [1365.2, 45], "Switzerland": [1535.1, 37], "Tanzania": [1582.1, 71], "Mozambique": [1462.1, 28], "Cameroon": [1400.8, 21], "Belize": [1427.3, 15], "Bahamas": [1411.9, 31], "Argentina": [1531.3, 29], "Panama": [1455.0, 25], "Lucknow Super Giants": [1465.9, 71], "Gujarat Titans": [1577.3, 77], "Israel": [1451.4, 11], "Turkey": [1349.5, 23], "Croatia": [1372.6, 33], "Slovenia": [1342.9, 19], "Cook Islands": [1505.5, 22], "Fiji": [1439.8, 16], "Samoa": [1437.3, 29], "Japan": [1621.9, 56], "Indonesia": [1415.9, 108], "South Korea": [1391.3, 23], "Mali": [1358.8, 15], "St Helena": [1408.5, 12], "Gambia": [1427.3, 9], "Eswatini": [1466.4, 23], "Texas Super Kings": [1471.9, 35], "Los Angeles Knight Riders": [1491.8, 33], "San Francisco Unicorns": [1521.2, 37], "MI New York": [1489.5, 39], "Washington Freedom": [1586.4, 38], "Seattle Orcas": [1439.2, 34], "China": [1407.4, 11], "Myanmar": [1311.7, 30], "Mongolia": [1364.3, 13], "Chile": [1474.6, 2], "Mexico": [1447.7, 28], "Cambodia": [1384.9, 35], "Royal Challengers Bengaluru": [1618.4, 46], "Costa Rica": [1406.5, 12], "Antigua and Barbuda Falcons": [1489.7, 20], "Brazil": [1418.0, 19], "Ivory Coast": [1370.9, 11], "Suriname": [1419.3, 14], "Turks and Caicos Island": [1469.8, 4], "Timor-Leste": [1389.3, 8], "Zambia": [1464.1, 10], "Hyderabad Kingsmen": [1519.1, 13], "Rawalpindiz": [1421.0, 10], "Uzbekistan": [1440.7, 4]}, "50": {"England": [1644.4, 429], "Sri Lanka": [1616.4, 467], "India": [1751.2, 503], "New Zealand": [1723.1, 378], "Australia": [1675.3, 455], "West Indies": [1524.6, 379], "South Africa": [1646.1, 374], "Zimbabwe": [1426.4, 272], "Namibia": [1411.5, 72], "Pakistan": [1660.2, 409], "Canada": [1325.6, 63], "Bangladesh": [1580.5, 324], "Kenya": [1387.4, 39], "Netherlands": [1461.4, 90], "United States of America": [1508.1, 81], "Africa XI": [1476.1, 4], "Asia XI": [1523.9, 4], "ICC World XI": [1489.0, 2], "Ireland": [1429.5, 126], "Bermuda": [1408.1, 12], "Scotland": [1509.1, 110], "United Arab Emirates": [1332.4, 113], "Hong Kong": [1434.5, 16], "Papua New Guinea": [1273.4, 56], "Nepal": [1417.7, 85], "Oman": [1400.0, 71], "Jersey": [1464.3, 4]}}
+{
+ "20": {
+  "Australia": [
+   1722.8,
+   220
+  ],
+  "New Zealand": [
+   1656.9,
+   251
+  ],
+  "England": [
+   1786.7,
+   214
+  ],
+  "South Africa": [
+   1675.0,
+   223
+  ],
+  "West Indies": [
+   1599.1,
+   230
+  ],
+  "Sri Lanka": [
+   1544.4,
+   220
+  ],
+  "Pakistan": [
+   1708.5,
+   278
+  ],
+  "India": [
+   1784.7,
+   270
+  ],
+  "Kenya": [
+   1588.9,
+   98
+  ],
+  "Bangladesh": [
+   1553.3,
+   195
+  ],
+  "Scotland": [
+   1538.1,
+   93
+  ],
+  "Zimbabwe": [
+   1557.9,
+   173
+  ],
+  "Kolkata Knight Riders": [
+   1522.2,
+   276
+  ],
+  "Royal Challengers Bangalore": [
+   1537.4,
+   237
+  ],
+  "Chennai Super Kings": [
+   1479.6,
+   265
+  ],
+  "Kings XI Punjab": [
+   1478.5,
+   190
+  ],
+  "Rajasthan Royals": [
+   1519.6,
+   249
+  ],
+  "Delhi Daredevils": [
+   1457.6,
+   159
+  ],
+  "Mumbai Indians": [
+   1468.1,
+   291
+  ],
+  "Deccan Chargers": [
+   1430.3,
+   75
+  ],
+  "Bermuda": [
+   1623.0,
+   48
+  ],
+  "Ireland": [
+   1573.9,
+   145
+  ],
+  "Netherlands": [
+   1537.2,
+   115
+  ],
+  "Canada": [
+   1577.7,
+   73
+  ],
+  "Kochi Tuskers Kerala": [
+   1481.5,
+   14
+  ],
+  "Pune Warriors": [
+   1367.7,
+   45
+  ],
+  "Brisbane Heat": [
+   1509.1,
+   161
+  ],
+  "Sydney Sixers": [
+   1586.3,
+   170
+  ],
+  "Melbourne Stars": [
+   1465.0,
+   165
+  ],
+  "Sydney Thunder": [
+   1437.4,
+   156
+  ],
+  "Adelaide Strikers": [
+   1448.5,
+   161
+  ],
+  "Melbourne Renegades": [
+   1390.1,
+   157
+  ],
+  "Hobart Hurricanes": [
+   1553.9,
+   159
+  ],
+  "Perth Scorchers": [
+   1609.7,
+   173
+  ],
+  "Sunrisers Hyderabad": [
+   1547.2,
+   210
+  ],
+  "Barbados Tridents": [
+   1454.6,
+   77
+  ],
+  "St Lucia Zouks": [
+   1509.2,
+   53
+  ],
+  "Guyana Amazon Warriors": [
+   1601.6,
+   144
+  ],
+  "Trinidad & Tobago Red Steel": [
+   1560.4,
+   29
+  ],
+  "Antigua Hawksbills": [
+   1416.8,
+   15
+  ],
+  "Jamaica Tallawahs": [
+   1504.2,
+   115
+  ],
+  "Nepal": [
+   1657.5,
+   113
+  ],
+  "Hong Kong": [
+   1572.1,
+   120
+  ],
+  "United Arab Emirates": [
+   1586.6,
+   124
+  ],
+  "St Kitts and Nevis Patriots": [
+   1409.7,
+   108
+  ],
+  "Papua New Guinea": [
+   1550.7,
+   63
+  ],
+  "Oman": [
+   1524.1,
+   103
+  ],
+  "Islamabad United": [
+   1524.2,
+   123
+  ],
+  "Quetta Gladiators": [
+   1471.2,
+   112
+  ],
+  "Lahore Qalandars": [
+   1524.0,
+   116
+  ],
+  "Karachi Kings": [
+   1469.5,
+   113
+  ],
+  "Peshawar Zalmi": [
+   1585.4,
+   123
+  ],
+  "Rising Pune Supergiants": [
+   1473.0,
+   14
+  ],
+  "Gujarat Lions": [
+   1468.8,
+   30
+  ],
+  "Trinbago Knight Riders": [
+   1618.8,
+   116
+  ],
+  "Rising Pune Supergiant": [
+   1554.5,
+   16
+  ],
+  "St Lucia Stars": [
+   1411.1,
+   18
+  ],
+  "ICC World XI": [
+   1487.1,
+   4
+  ],
+  "Multan Sultans": [
+   1485.7,
+   98
+  ],
+  "United States of America": [
+   1587.8,
+   52
+  ],
+  "Philippines": [
+   1474.0,
+   43
+  ],
+  "Vanuatu": [
+   1413.3,
+   37
+  ],
+  "Delhi Capitals": [
+   1528.7,
+   118
+  ],
+  "Ghana": [
+   1462.9,
+   42
+  ],
+  "Namibia": [
+   1588.7,
+   94
+  ],
+  "Uganda": [
+   1775.3,
+   102
+  ],
+  "Botswana": [
+   1472.0,
+   56
+  ],
+  "Nigeria": [
+   1517.7,
+   93
+  ],
+  "Germany": [
+   1555.9,
+   64
+  ],
+  "Italy": [
+   1558.0,
+   38
+  ],
+  "Guernsey": [
+   1562.9,
+   40
+  ],
+  "Jersey": [
+   1653.8,
+   49
+  ],
+  "Denmark": [
+   1572.2,
+   48
+  ],
+  "Norway": [
+   1515.7,
+   56
+  ],
+  "Thailand": [
+   1384.7,
+   62
+  ],
+  "Malaysia": [
+   1621.9,
+   114
+  ],
+  "Maldives": [
+   1359.6,
+   37
+  ],
+  "Singapore": [
+   1441.9,
+   72
+  ],
+  "Qatar": [
+   1557.8,
+   58
+  ],
+  "Kuwait": [
+   1546.5,
+   67
+  ],
+  "Cayman Islands": [
+   1539.1,
+   41
+  ],
+  "Portugal": [
+   1645.1,
+   41
+  ],
+  "Spain": [
+   1689.3,
+   41
+  ],
+  "Gibraltar": [
+   1358.5,
+   57
+  ],
+  "Bhutan": [
+   1405.2,
+   43
+  ],
+  "Saudi Arabia": [
+   1535.7,
+   49
+  ],
+  "Bahrain": [
+   1621.4,
+   110
+  ],
+  "Iran": [
+   1487.6,
+   1
+  ],
+  "Isle of Man": [
+   1481.1,
+   21
+  ],
+  "Belgium": [
+   1588.4,
+   45
+  ],
+  "Luxembourg": [
+   1419.1,
+   44
+  ],
+  "Czech Republic": [
+   1482.0,
+   38
+  ],
+  "Bulgaria": [
+   1361.0,
+   50
+  ],
+  "Romania": [
+   1581.1,
+   70
+  ],
+  "Punjab Kings": [
+   1523.8,
+   85
+  ],
+  "Austria": [
+   1624.2,
+   80
+  ],
+  "Greece": [
+   1424.9,
+   9
+  ],
+  "Serbia": [
+   1315.1,
+   38
+  ],
+  "Malta": [
+   1451.6,
+   77
+  ],
+  "France": [
+   1517.7,
+   48
+  ],
+  "Sweden": [
+   1542.9,
+   49
+  ],
+  "Rwanda": [
+   1500.2,
+   100
+  ],
+  "Finland": [
+   1514.3,
+   40
+  ],
+  "Barbados Royals": [
+   1466.3,
+   52
+  ],
+  "St Lucia Kings": [
+   1557.6,
+   53
+  ],
+  "Hungary": [
+   1428.7,
+   48
+  ],
+  "Estonia": [
+   1423.9,
+   34
+  ],
+  "Cyprus": [
+   1471.2,
+   41
+  ],
+  "Seychelles": [
+   1399.1,
+   16
+  ],
+  "Malawi": [
+   1443.1,
+   40
+  ],
+  "Lesotho": [
+   1346.9,
+   21
+  ],
+  "Swaziland": [
+   1443.6,
+   5
+  ],
+  "Sierra Leone": [
+   1365.2,
+   45
+  ],
+  "Switzerland": [
+   1535.1,
+   37
+  ],
+  "Tanzania": [
+   1582.1,
+   71
+  ],
+  "Mozambique": [
+   1462.1,
+   28
+  ],
+  "Cameroon": [
+   1400.8,
+   21
+  ],
+  "Belize": [
+   1427.3,
+   15
+  ],
+  "Bahamas": [
+   1411.9,
+   31
+  ],
+  "Argentina": [
+   1531.3,
+   29
+  ],
+  "Panama": [
+   1455.0,
+   25
+  ],
+  "Lucknow Super Giants": [
+   1465.9,
+   71
+  ],
+  "Gujarat Titans": [
+   1577.3,
+   77
+  ],
+  "Israel": [
+   1451.4,
+   11
+  ],
+  "Turkey": [
+   1349.5,
+   23
+  ],
+  "Croatia": [
+   1372.6,
+   33
+  ],
+  "Slovenia": [
+   1342.9,
+   19
+  ],
+  "Cook Islands": [
+   1505.5,
+   22
+  ],
+  "Fiji": [
+   1439.8,
+   16
+  ],
+  "Samoa": [
+   1437.3,
+   29
+  ],
+  "Japan": [
+   1621.9,
+   56
+  ],
+  "Indonesia": [
+   1415.9,
+   108
+  ],
+  "South Korea": [
+   1391.3,
+   23
+  ],
+  "Mali": [
+   1358.8,
+   15
+  ],
+  "St Helena": [
+   1408.5,
+   12
+  ],
+  "Gambia": [
+   1427.3,
+   9
+  ],
+  "Eswatini": [
+   1466.4,
+   23
+  ],
+  "Texas Super Kings": [
+   1471.9,
+   35
+  ],
+  "Los Angeles Knight Riders": [
+   1491.8,
+   33
+  ],
+  "San Francisco Unicorns": [
+   1521.2,
+   37
+  ],
+  "MI New York": [
+   1489.5,
+   39
+  ],
+  "Washington Freedom": [
+   1586.4,
+   38
+  ],
+  "Seattle Orcas": [
+   1439.2,
+   34
+  ],
+  "China": [
+   1407.4,
+   11
+  ],
+  "Myanmar": [
+   1311.7,
+   30
+  ],
+  "Mongolia": [
+   1364.3,
+   13
+  ],
+  "Chile": [
+   1474.6,
+   2
+  ],
+  "Mexico": [
+   1447.7,
+   28
+  ],
+  "Cambodia": [
+   1384.9,
+   35
+  ],
+  "Royal Challengers Bengaluru": [
+   1618.4,
+   46
+  ],
+  "Costa Rica": [
+   1406.5,
+   12
+  ],
+  "Antigua and Barbuda Falcons": [
+   1489.7,
+   20
+  ],
+  "Brazil": [
+   1418.0,
+   19
+  ],
+  "Ivory Coast": [
+   1370.9,
+   11
+  ],
+  "Suriname": [
+   1419.3,
+   14
+  ],
+  "Turks and Caicos Island": [
+   1469.8,
+   4
+  ],
+  "Timor-Leste": [
+   1389.3,
+   8
+  ],
+  "Zambia": [
+   1464.1,
+   10
+  ],
+  "Hyderabad Kingsmen": [
+   1519.1,
+   13
+  ],
+  "Rawalpindiz": [
+   1421.0,
+   10
+  ],
+  "Uzbekistan": [
+   1440.7,
+   4
+  ]
+ },
+ "50": {
+  "England": [
+   1644.4,
+   429
+  ],
+  "Sri Lanka": [
+   1616.4,
+   467
+  ],
+  "India": [
+   1751.2,
+   503
+  ],
+  "New Zealand": [
+   1723.1,
+   378
+  ],
+  "Australia": [
+   1675.3,
+   455
+  ],
+  "West Indies": [
+   1524.6,
+   379
+  ],
+  "South Africa": [
+   1646.1,
+   374
+  ],
+  "Zimbabwe": [
+   1426.4,
+   272
+  ],
+  "Namibia": [
+   1411.5,
+   72
+  ],
+  "Pakistan": [
+   1660.2,
+   409
+  ],
+  "Canada": [
+   1325.6,
+   63
+  ],
+  "Bangladesh": [
+   1580.5,
+   324
+  ],
+  "Kenya": [
+   1387.4,
+   39
+  ],
+  "Netherlands": [
+   1461.4,
+   90
+  ],
+  "United States of America": [
+   1508.1,
+   81
+  ],
+  "Africa XI": [
+   1476.1,
+   4
+  ],
+  "Asia XI": [
+   1523.9,
+   4
+  ],
+  "ICC World XI": [
+   1489.0,
+   2
+  ],
+  "Ireland": [
+   1429.5,
+   126
+  ],
+  "Bermuda": [
+   1408.1,
+   12
+  ],
+  "Scotland": [
+   1509.1,
+   110
+  ],
+  "United Arab Emirates": [
+   1332.4,
+   113
+  ],
+  "Hong Kong": [
+   1434.5,
+   16
+  ],
+  "Papua New Guinea": [
+   1273.4,
+   56
+  ],
+  "Nepal": [
+   1417.7,
+   85
+  ],
+  "Oman": [
+   1400.0,
+   71
+  ],
+  "Jersey": [
+   1464.3,
+   4
+  ]
+ },
+ "hnd": {
+  "Oval Invincibles": [
+   1625.4147813692027,
+   41
+  ],
+  "Manchester Originals": [
+   1441.9912470233633,
+   40
+  ],
+  "London Spirit": [
+   1403.32170330111,
+   41
+  ],
+  "Birmingham Phoenix": [
+   1495.2812147678999,
+   43
+  ],
+  "Southern Brave": [
+   1489.1024390435039,
+   47
+  ],
+  "Trent Rockets": [
+   1575.5312014681335,
+   47
+  ],
+  "Welsh Fire": [
+   1454.460881618855,
+   42
+  ],
+  "Northern Superchargers": [
+   1519.9860833869661,
+   35
+  ],
+  "Sunrisers Leeds": [
+   1503.107236899995,
+   4
+  ],
+  "MI London": [
+   1505.1604759765619,
+   5
+  ],
+  "Manchester Super Giants": [
+   1486.6427351444086,
+   5
+  ]
+ },
+ "hnd-w": {
+  "Manchester Originals": [
+   1473.479410071794,
+   32
+  ],
+  "Oval Invincibles": [
+   1508.101145009164,
+   38
+  ],
+  "Birmingham Phoenix": [
+   1401.0499254289596,
+   40
+  ],
+  "London Spirit": [
+   1507.859129576962,
+   41
+  ],
+  "Southern Brave": [
+   1613.794172610568,
+   45
+  ],
+  "Trent Rockets": [
+   1519.9225710300184,
+   42
+  ],
+  "Welsh Fire": [
+   1440.8401868486715,
+   42
+  ],
+  "Northern Superchargers": [
+   1577.095607085762,
+   36
+  ],
+  "MI London": [
+   1456.149322755543,
+   4
+  ],
+  "Sunrisers Leeds": [
+   1479.9712725473955,
+   4
+  ],
+  "Manchester Super Giants": [
+   1521.737257035162,
+   4
+  ]
+ }
+}

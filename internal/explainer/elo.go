@@ -40,13 +40,28 @@ func eloLoad() {
 }
 
 // eloFor returns (rating, gamesPlayed) for a team in the format's pool.
-func eloFor(totalOvers int, team string) (float64, float64) {
+// The Hundred gets its own pools, one per competition: the franchises
+// share names across the men's and women's draws but are different sides,
+// and both are different sides again from any T20 team.
+func eloFor(totalOvers int, team string, bpo int) (float64, float64) {
 	eloOnce.Do(eloLoad)
+	key := strings.ToLower(strings.TrimSpace(team))
 	pool := "50"
 	if totalOvers <= 20 {
 		pool = "20"
 	}
-	if rg, ok := eloPool[pool][strings.ToLower(strings.TrimSpace(team))]; ok {
+	if bpo == 5 {
+		pool = "hnd"
+		if strings.Contains(key, "women") || strings.HasSuffix(key, "(w)") {
+			pool = "hnd-w"
+		}
+		// ESPN suffixes the competition onto the name — "Trent Rockets
+		// (Men)" — while the ratings are keyed by the bare franchise.
+		if i := strings.IndexByte(key, '('); i > 0 {
+			key = strings.TrimSpace(key[:i])
+		}
+	}
+	if rg, ok := eloPool[pool][key]; ok {
 		return rg[0], rg[1]
 	}
 	return 1500, 0
@@ -55,8 +70,8 @@ func eloFor(totalOvers int, team string) (float64, float64) {
 // eloDiffFeature is the fitted model's team-strength input: rating gap
 // scaled to ~[-1,1] and shrunk toward 0 for teams with little history.
 func eloDiffFeature(s MatchState) float64 {
-	rBat, gBat := eloFor(s.TotalOvers, s.BattingTeam)
-	rBowl, gBowl := eloFor(s.TotalOvers, s.BowlingTeam)
+	rBat, gBat := eloFor(s.TotalOvers, s.BattingTeam, s.bpo())
+	rBowl, gBowl := eloFor(s.TotalOvers, s.BowlingTeam, s.bpo())
 	g := gBat
 	if gBowl < g {
 		g = gBowl
