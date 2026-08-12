@@ -56,6 +56,9 @@ type MatchState struct {
 	BPO int `json:"balls_per_over,omitempty"`
 }
 
+// BallsPer is bpo() for callers outside this package.
+func (s MatchState) BallsPer() int { return s.bpo() }
+
 func (s MatchState) bpo() int {
 	if s.BPO > 0 {
 		return s.BPO

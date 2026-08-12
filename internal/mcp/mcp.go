@@ -325,7 +325,14 @@ func winProbTool(args map[string]any) (string, error) {
 		balls := st.BallsLeft()
 		fmt.Fprintf(&b, ", chasing %d — %d needed from %d balls", *st.Target, need, balls)
 		if balls > 0 {
-			fmt.Fprintf(&b, " (%.2f per over required)", float64(need)*6/float64(balls))
+			// Per SET in The Hundred (five balls), per over elsewhere.
+			// A hardcoded six reported every Hundred chase 20% high.
+			per := st.BallsPer()
+			unit := "over"
+			if per != 6 {
+				unit = "set"
+			}
+			fmt.Fprintf(&b, " (%.2f per %s required)", float64(need)*float64(per)/float64(balls), unit)
 		}
 	}
 	b.WriteString(".\nModel: logistic fit per format and innings on 8,000+ Cricsheet matches, with pre-match Elo. Held-out log loss 0.40 (T20) / 0.37 (ODI); well calibrated above 5 wickets in hand, slightly pessimistic below.")

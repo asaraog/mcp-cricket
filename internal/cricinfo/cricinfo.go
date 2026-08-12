@@ -872,7 +872,20 @@ func IsTestMatch(m Match) bool {
 //	"67/1 (8.5/20 ov, target 160)" -> (67, 1, 8.5)
 //	"159/9 (96 balls)"           -> (159, 9, 16.0)
 //	"311 & 96/1 (19 ov)"         -> last innings segment (Tests)
+// ParseScoreString reads a scoreline assuming six-ball overs. Use
+// ParseScoreStringBPO where the competition is known: ESPN reports some
+// innings as "(N balls)", and converting that with a hardcoded six turns
+// 30 balls of a Hundred innings into 5.0 overs when it is 6.0 five-ball
+// sets — a ball count that is then wrong everywhere downstream.
 func ParseScoreString(score string) (runs, wickets int, overs *float64, ok bool) {
+	return ParseScoreStringBPO(score, 6)
+}
+
+// ParseScoreStringBPO is ParseScoreString for a known balls-per-over.
+func ParseScoreStringBPO(score string, bpo int) (runs, wickets int, overs *float64, ok bool) {
+	if bpo <= 0 {
+		bpo = 6
+	}
 	if strings.TrimSpace(score) == "" {
 		return 0, 0, nil, false
 	}
@@ -887,7 +900,7 @@ func ParseScoreString(score string) (runs, wickets int, overs *float64, ok bool)
 			}
 		} else if m := ballsRe.FindStringSubmatch(inner); m != nil {
 			if balls, err := strconv.Atoi(m[1]); err == nil {
-				v := float64(balls/6) + float64(balls%6)/10
+				v := float64(balls/bpo) + float64(balls%bpo)/10
 				overs = &v
 			}
 		}
@@ -944,8 +957,14 @@ func ToMatchState(m Match) *explainer.MatchState {
 		ok            bool
 	}
 	var p [2]parsed
+	// The competition decides how a "(N balls)" scoreline converts, and it
+	// is known here, so pass it rather than assuming six.
+	scoreBPO := 6
+	if LeagueIsHundred(m.LeagueID) {
+		scoreBPO = 5
+	}
 	for i, t := range m.Teams {
-		p[i].runs, p[i].wickets, p[i].overs, p[i].ok = ParseScoreString(t.Score)
+		p[i].runs, p[i].wickets, p[i].overs, p[i].ok = ParseScoreStringBPO(t.Score, scoreBPO)
 	}
 	if !p[0].ok && !p[1].ok {
 		return nil
