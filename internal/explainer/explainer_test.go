@@ -1,6 +1,7 @@
 package explainer
 
 import (
+	"math"
 	"strings"
 	"testing"
 )
@@ -96,8 +97,16 @@ func TestExplainScore(t *testing.T) {
 	}
 }
 
-// Parity with the Python fit (fitted.json): same states must produce the
-// same probabilities to 1e-3, so a Go-side drift breaks loudly.
+// Parity with the Python fit: same states must produce the same
+// probabilities to 1e-3, so a Go-side drift breaks loudly.
+//
+// The four T20 innings-one values moved when t20-1 was refitted against real
+// per-ground par (held-out log-loss
+// 0.6030 -> 0.5967). The chase and ODI segments are untouched and their
+// numbers are unchanged, which is the useful signal that only the intended
+// segment moved. A fresh innings now comes from the measured bat-first base
+// rate rather than the fitted line, which had no data at zero balls and
+// extrapolated to 73%.
 func TestWinProbabilityFittedParity(t *testing.T) {
 	tgt := func(n int) *int { return &n }
 	cases := []struct {
@@ -105,19 +114,52 @@ func TestWinProbabilityFittedParity(t *testing.T) {
 		s    MatchState
 		want float64
 	}{
-		{"t20 inn1 80/2 @10", MatchState{Runs: 80, Wickets: 2, Overs: 10.0, TotalOvers: 20, Innings: 1}, 0.5881},
-		{"t20 inn1 fresh", MatchState{Runs: 0, Wickets: 0, Overs: 0.0, TotalOvers: 20, Innings: 1}, 0.5458},
+		{"t20 inn1 80/2 @10", MatchState{Runs: 80, Wickets: 2, Overs: 10.0, TotalOvers: 20, Innings: 1}, 0.53},
+		{"t20 inn1 fresh", MatchState{Runs: 0, Wickets: 0, Overs: 0.0, TotalOvers: 20, Innings: 1}, 0.482},
 		{"t20 chase 100/3 @12 tgt171", MatchState{Runs: 100, Wickets: 3, Overs: 12.0, TotalOvers: 20, Innings: 2, Target: tgt(171)}, 0.4904},
 		{"t20 chase 160/8 @18 tgt171", MatchState{Runs: 160, Wickets: 8, Overs: 18.0, TotalOvers: 20, Innings: 2, Target: tgt(171)}, 0.4950},
 		{"odi inn1 180/4 @30", MatchState{Runs: 180, Wickets: 4, Overs: 30.0, TotalOvers: 50, Innings: 1}, 0.6258},
 		{"odi chase 200/5 @35 tgt288", MatchState{Runs: 200, Wickets: 5, Overs: 35.0, TotalOvers: 50, Innings: 2, Target: tgt(288)}, 0.4800},
-		{"elo: India bat first v Nepal", MatchState{BattingTeam: "India", BowlingTeam: "Nepal", Runs: 0, Wickets: 0, Overs: 0.0, TotalOvers: 20, Innings: 1}, 0.7093},
-		{"elo: Nepal bat first v India", MatchState{BattingTeam: "Nepal", BowlingTeam: "India", Runs: 0, Wickets: 0, Overs: 0.0, TotalOvers: 20, Innings: 1}, 0.3718},
+		{"elo: India bat first v Nepal", MatchState{BattingTeam: "India", BowlingTeam: "Nepal", Runs: 0, Wickets: 0, Overs: 0.0, TotalOvers: 20, Innings: 1}, 0.61},
+		{"elo: Nepal bat first v India", MatchState{BattingTeam: "Nepal", BowlingTeam: "India", Runs: 0, Wickets: 0, Overs: 0.0, TotalOvers: 20, Innings: 1}, 0.356},
 	}
 	for _, c := range cases {
 		got := WinProbability(c.s).BattingTeamWinProb
 		if diff := got - c.want; diff > 0.001 || diff < -0.001 {
 			t.Errorf("%s: got %v want %v", c.name, got, c.want)
 		}
+	}
+}
+
+func TestMultiDayWinProbShape(t *testing.T) {
+	// The three outcomes must be a distribution, and the model has to agree
+	// with the Python fit on the cases used to sanity-check it there.
+	cases := []struct {
+		name          string
+		s             MultiDayState
+		wantTopIsBat  bool
+		wantTopIsDraw bool
+	}{
+		{"400 ahead on day 4 with 6 wickets", MultiDayState{Lead: 400, WicketsInHand: 6, Innings: 3, FracLeft: 0.30}, true, false},
+		{"chasing 120 with 8 wickets", MultiDayState{Lead: -119, WicketsInHand: 8, Innings: 4, FracLeft: 0.15, Needed: 120}, true, false},
+	}
+	for _, c := range cases {
+		bat, field, draw := MultiDayWinProb(c.s)
+		if sum := bat + field + draw; math.Abs(sum-1) > 1e-9 {
+			t.Errorf("%s: probabilities sum to %v, want 1", c.name, sum)
+		}
+		for _, p := range []float64{bat, field, draw} {
+			if p < 0 || p > 1 {
+				t.Errorf("%s: probability out of range: %v", c.name, p)
+			}
+		}
+		if c.wantTopIsBat && !(bat > field && bat > draw) {
+			t.Errorf("%s: batting side should lead, got bat=%.2f field=%.2f draw=%.2f", c.name, bat, field, draw)
+		}
+	}
+	// A hopeless position must favour the fielding side.
+	bat, field, _ := MultiDayWinProb(MultiDayState{Lead: -300, WicketsInHand: 3, Innings: 4, FracLeft: 0.10, Needed: 301})
+	if field <= bat {
+		t.Errorf("300 behind with 3 wickets: field=%.2f should beat bat=%.2f", field, bat)
 	}
 }

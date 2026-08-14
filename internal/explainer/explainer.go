@@ -54,10 +54,21 @@ type MatchState struct {
 	// with six assumed, a Hundred innings was priced and narrated as 120
 	// deliveries when only 100 exist.
 	BPO int `json:"balls_per_over,omitempty"`
+	// Par is the expected first-innings total for THIS ground, zero when
+	// unknown. The model used one constant for every T20 ever played; real
+	// pars run 153.7 to 172.5 by league and further by ground, and two of
+	// the seven innings-one features are measured against it. See par.go.
+	Par float64 `json:"par,omitempty"`
 }
 
-// BallsPer is bpo() for callers outside this package.
-func (s MatchState) BallsPer() int { return s.bpo() }
+// par returns the ground's expected total, falling back to the old constant
+// so a state built without venue information still works.
+func (s MatchState) par() float64 {
+	if s.Par > 0 {
+		return s.Par
+	}
+	return parForBPO(s.TotalOvers, s.bpo())
+}
 
 func (s MatchState) bpo() int {
 	if s.BPO > 0 {
@@ -65,6 +76,11 @@ func (s MatchState) bpo() int {
 	}
 	return BallsPerOver
 }
+
+// BallsPer is bpo() for callers outside this package. The server's
+// rule-based answers were dividing by a hardcoded 6, which is 20% wrong in
+// The Hundred, where a set is five balls.
+func (s MatchState) BallsPer() int { return s.bpo() }
 
 func (s MatchState) BallsBowled() int {
 	b, err := OversToBallsN(s.Overs, s.bpo())
@@ -149,7 +165,7 @@ type winSeg struct {
 var winSegs = map[string]winSeg{
 	// innings 1 features:
 	// [proj-par, crr, wicketsInHand, progress, runs/par, elo, elo*remain]
-	"t20-1": {c: [8]float64{0.003338036328069468, -0.01798275646119048, 0.27245776388269016, -1.9983790833924384, 3.915425351161525, 2.138784538198616, 0.48269187452768897, 0}, b: -2.541006187391477},
+	"t20-1": {c: [8]float64{0.007575332112312281, -0.12286299039664977, 0.1852269312738652, -4.346998556489402, 5.59950069291025, 1.929607667333075, 0.7822315297894809, 0}, b: -0.8318917780210963},
 	"odi-1": {c: [8]float64{0.00375725184140388, -0.12900193157949036, 0.33321913583729357, -1.1465588513129303, 4.093939838211865, 2.0422874764820356, 0.35867166932611116, 0}, b: -2.5931749579036794},
 	// chase features:
 	// [ln-lb, ln-lw, rrr, lw*lb/10, progress, elo, elo*remain] where
@@ -197,6 +213,11 @@ func parForBPO(totalOvers, bpo int) float64 {
 	return 285.0 * float64(totalOvers) / 50.0
 }
 
+// batFirstLogit is the measured advantage of batting first: 48.2% across
+// 6,411 completed T20s in the archive. Slightly against, which is why a
+// fresh innings should not open above even money.
+const batFirstLogit = -0.0720
+
 func sigmoid(z float64) float64 { return 1.0 / (1.0 + math.Exp(-z)) }
 
 func clampProb(p float64) float64 { return math.Min(0.99, math.Max(0.01, p)) }
@@ -243,8 +264,15 @@ func WinProbability(s MatchState) WinProb {
 		p = 0.5 // malformed state: no basis for a lean either way
 	case s.Innings >= 2 && s.Target != nil:
 		p = ChaseWinProbability(s)
+	case s.Innings <= 1 && s.BallsBowled() == 0:
+		// Nothing has happened yet. The fitted innings-one segment is
+		// unconstrained here — the archive holds 536 such states against
+		// 737,522 others, so the fit extrapolates and lands near 73% for a
+		// side that has not faced a ball. Use the measured base rate for
+		// batting first instead, tilted by the pre-match rating.
+		p = clampProb(sigmoid(batFirstLogit + winSegs["t20-1"].c[5]*eloDiffFeature(s)))
 	default:
-		par := parForBPO(s.TotalOvers, s.bpo())
+		par := s.par()
 		total := float64(s.TotalOvers * s.bpo())
 		balls := float64(s.BallsBowled())
 		wih := math.Max(float64(s.WicketsInHand()), 0)
@@ -363,7 +391,7 @@ func ExplainScore(s MatchState) string {
 // forced to name a winner is wrong by construction on that third.
 //
 // Fitted over 688k states from 2,324 Test and County Championship matches
-// (scripts/winmodel/fit_test_model.py). Held out chronologically: innings
+// (multinomial fit on the multi-day archive). Held out chronologically: innings
 // 1-3 log loss 0.905 against a 1.099 three-way baseline, 52.6% accuracy,
 // 87.8% on confident calls; 4th-innings chase 0.578, 75.1% accuracy, 92.4%
 // on confident calls.
@@ -391,8 +419,11 @@ type MultiDayState struct {
 	IsTest bool
 }
 
+// mdSeg holds one outcome's coefficients. Sixteen slots because the
+// position segment now carries per-innings interactions; the chase segment
+// uses the first ten and leaves the rest zero.
 type mdSeg struct {
-	c [10]float64
+	c [16]float64
 	b float64
 }
 
@@ -401,25 +432,31 @@ type mdSeg struct {
 var mdSegs = map[string][3]mdSeg{
 	// innings 1-3: [lead/100, lead/100*frac, wkts/10, wkts/10*frac, frac,
 	//               is3rdInn, signedLog(lead)/10, isTest, elo, elo*frac]
+	// Refit 2026-08-14 with per-innings interactions; held-out multinomial
+	// loss 0.8617 -> 0.8025 over 132,368 states, split by match and
+	// chronological so a match's own future cannot leak in.
+	// [lead/100, lead/100*frac, w/10, w/10*frac, frac, is2nd, is3rd,
+	//  signedLog(lead)/10, isTest, elo, elo*frac, elo*is2nd, elo*is3rd,
+	//  lead/100*is2nd, lead/100*is3rd]
 	"pos": {
-		{c: [10]float64{1.011083, -1.125845, 1.846375, -1.832015, 1.663345, -0.617318, -0.351435, 0.276168, 1.087924, 0.494150}, b: -1.313573},
-		{c: [10]float64{-0.790276, 0.626350, -3.628703, 1.721620, 2.829459, 2.198717, -0.084083, 0.142241, -0.843198, -0.703753}, b: -1.051189},
-		{c: [10]float64{-0.220807, 0.499495, 1.782328, 0.110395, -4.492804, -1.581400, 0.435519, -0.418409, -0.244727, 0.209603}, b: 2.364762},
+		{c: [16]float64{0.205266, 0.299528, 1.291425, -0.568873, 3.381618, 2.391192, 1.249413, 0.144576, 0.18379, 2.757996, -1.34459, -0.460227, -1.453204, 0.144148, 0.31653}, b: -4.171694},
+		{c: [16]float64{-0.220521, -0.287665, -3.511913, 1.300483, 1.904974, -0.954457, 1.485916, -0.162807, 0.177408, -2.829715, 1.252548, 0.89141, 1.373604, -0.092771, -0.309323}, b: 0.307109},
+		{c: [16]float64{0.015255, -0.011863, 2.220488, -0.73161, -5.286592, -1.436735, -2.735329, 0.018231, -0.361198, 0.071719, 0.092042, -0.431183, 0.0796, -0.051377, -0.007207}, b: 3.864585},
 	},
 	// 4th innings: [ln, lw, ln*lw, frac, ln*frac, lw*frac, needed/100, isTest,
 	//               elo, elo*frac]
 	// where ln = log1p(needed)/5 and lw = log1p(wickets)/2.5.
 	"chase": {
-		{c: [10]float64{-8.434226, 6.514523, 2.714080, 1.131882, 3.255954, -3.092519, -0.847052, -0.373898, 1.526127, -2.707040}, b: 2.199541},
-		{c: [10]float64{5.536314, -2.334303, -5.313167, -0.702700, 5.376529, -1.423343, 0.640373, 0.133327, -1.160645, 2.021551}, b: -1.128385},
-		{c: [10]float64{2.897912, -4.180220, 2.599088, -0.429183, -8.632482, 4.515862, 0.206679, 0.240572, -0.365482, 0.685489}, b: -1.071157},
+		{c: [16]float64{-8.434226, 6.514523, 2.714080, 1.131882, 3.255954, -3.092519, -0.847052, -0.373898, 1.526127, -2.707040}, b: 2.199541},
+		{c: [16]float64{5.536314, -2.334303, -5.313167, -0.702700, 5.376529, -1.423343, 0.640373, 0.133327, -1.160645, 2.021551}, b: -1.128385},
+		{c: [16]float64{2.897912, -4.180220, 2.599088, -0.429183, -8.632482, 4.515862, 0.206679, 0.240572, -0.365482, 0.685489}, b: -1.071157},
 	},
 }
 
 // MultiDayWinProb returns P(batting side wins), P(fielding side wins) and
 // P(draw). The three sum to 1.
 func MultiDayWinProb(s MultiDayState) (bat, field, draw float64) {
-	var f [10]float64
+	var f [16]float64
 	var seg [3]mdSeg
 	frac := math.Max(0, math.Min(1, s.FracLeft))
 	w := float64(s.WicketsInHand)
@@ -432,12 +469,22 @@ func MultiDayWinProb(s MultiDayState) (bat, field, draw float64) {
 		seg = mdSegs["chase"]
 		ln := math.Log1p(math.Max(0, float64(s.Needed))) / 5.0
 		lw := math.Log1p(w) / 2.5
-		f = [10]float64{ln, lw, ln * lw, frac, ln * frac, lw * frac,
+		f = [16]float64{ln, lw, ln * lw, frac, ln * frac, lw * frac,
 			float64(s.Needed) / 100.0, isTest, s.EloEdge, s.EloEdge * frac}
 	} else {
 		seg = mdSegs["pos"]
 		lead := float64(s.Lead)
-		third := 0.0
+		// The rating discount has to vary by innings. With one flat elo
+		// term, innings 1 — which holds the most states and the least
+		// reason to discount a lead — set the weight for all three, and
+		// innings 2 and 3 inherited it with no support of their own. The
+		// archive holds 28 states of a weak side leading in the second
+		// innings, so that case was pure extrapolation: Bangladesh led
+		// Australia by 153 and the model said 15% against a market of 54%.
+		second, third := 0.0, 0.0
+		if s.Innings == 2 {
+			second = 1
+		}
 		if s.Innings == 3 {
 			third = 1
 		}
@@ -445,9 +492,10 @@ func MultiDayWinProb(s MultiDayState) (bat, field, draw float64) {
 		if lead < 0 {
 			signedLog = -signedLog
 		}
-		f = [10]float64{lead / 100.0, (lead / 100.0) * frac, w / 10.0,
-			(w / 10.0) * frac, frac, third, signedLog, isTest,
-			s.EloEdge, s.EloEdge * frac}
+		f = [16]float64{lead / 100.0, (lead / 100.0) * frac, w / 10.0,
+			(w / 10.0) * frac, frac, second, third, signedLog, isTest,
+			s.EloEdge, s.EloEdge * frac, s.EloEdge * second, s.EloEdge * third,
+			(lead / 100.0) * second, (lead / 100.0) * third}
 	}
 
 	var z [3]float64

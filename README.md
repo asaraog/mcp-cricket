@@ -20,6 +20,11 @@ recalled from training.
 [Cricsheet](https://cricsheet.org) dataset, and live scores come from public
 endpoints.
 
+The same win model runs in production at
+**[cricketfornoobs.com](https://cricketfornoobs.com)**, a live cricket explainer
+for American sports fans. This server exposes the analytics side of it to any
+MCP client.
+
 ## ✨ What makes this different
 
 Most sports MCP servers wrap a scores API. This one ships analysis:
@@ -145,6 +150,14 @@ state (runs, wickets, balls remaining, required rate), pre-match Elo, and a
 wickets × required-rate interaction — because thin batting hurts far more when
 the asking rate is steep. Calibration is measured by wickets in hand: within
 about one point across most of the range.
+
+**Par is per ground.** A first-innings score only means something relative to
+what the ground usually yields, so the innings-one segments are fitted against
+a table of 371 grounds and 7 leagues rather than one global constant. Real pars
+run from 153.7 to 172.5 by league alone, and further by ground. Pass `venue`
+(and `league`) to `cricket_win_probability` and the same 80/2 at ten overs is
+47% at Chinnaswamy and 60% at Newlands. Without a venue it falls back
+ground → league → global, which costs about 0.006 of held-out log loss.
 
 It cannot see injuries, weather, pitch reports or team news.
 

@@ -194,6 +194,8 @@ func buildTools() []Tool {
 				"target":         inte("runs needed to win (second innings only)"),
 				"batting_team":   str("optional team name, improves the estimate via Elo"),
 				"bowling_team":   str("optional team name, improves the estimate via Elo"),
+				"venue":          str("optional ground name, e.g. 'Eden Gardens' or 'M Chinnaswamy Stadium, Bengaluru' — pass it whenever it is known, since scoring conditions vary by ground more than by anything else here"),
+				"league":         str("optional competition, e.g. 'IPL', 'BBL', 'PSL' — used as the fallback when the ground is not recognised"),
 			}, "runs", "wickets", "overs", "total_overs", "innings"),
 			handler: winProbTool,
 		},
@@ -305,6 +307,16 @@ func winProbTool(args map[string]any) (string, error) {
 	if bpo, ok := argInt(args, "balls_per_over"); ok && bpo == 5 {
 		st.BPO = 5
 	}
+	// Par is the expected first-innings total for THIS ground, and two of the
+	// seven innings-one features are measured against it. Without a venue the
+	// model falls back to one global constant for every T20 ever played, which
+	// is worth 0.6047 held-out log loss against 0.5988 with the real ground.
+	// Real pars run 153.7 to 172.5 by league and further by ground, so a
+	// venue is the single most useful optional argument here.
+	venue, league := argStr(args, "venue"), argStr(args, "league")
+	if venue != "" || league != "" {
+		st.Par = explainer.ParFor(venue, league, total, st.BallsPer())
+	}
 	if st.BattingTeam == "" {
 		st.BattingTeam = "batting side"
 	}
@@ -335,7 +347,16 @@ func winProbTool(args map[string]any) (string, error) {
 			fmt.Fprintf(&b, " (%.2f per %s required)", float64(need)*float64(per)/float64(balls), unit)
 		}
 	}
-	b.WriteString(".\nModel: logistic fit per format and innings on 8,000+ Cricsheet matches, with pre-match Elo. Held-out log loss 0.40 (T20) / 0.37 (ODI); well calibrated above 5 wickets in hand, slightly pessimistic below.")
+	b.WriteString(".\n")
+	// Surfacing the par makes the first-innings answer legible: 140/3 reads
+	// very differently at a 172 ground than at a 154 one, and the caller
+	// otherwise cannot tell whether the venue was recognised at all.
+	if st.Par > 0 {
+		fmt.Fprintf(&b, "Par here: %.0f, the expected first-innings total for this venue and league.\n", st.Par)
+	} else if inn == 1 {
+		b.WriteString("Par: using the global average, since no venue was given. Pass one for a sharper first-innings number.\n")
+	}
+	b.WriteString("Model: logistic fit per format and innings on 8,000+ Cricsheet matches, with pre-match Elo and per-ground par. Held-out log loss 0.40 (T20) / 0.37 (ODI); well calibrated above 5 wickets in hand, slightly pessimistic below.")
 	return b.String(), nil
 }
 
