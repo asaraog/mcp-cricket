@@ -11,9 +11,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"net/url"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -35,14 +38,41 @@ type Market struct {
 	PriceSource string  `json:"price_source,omitempty"` // "" (summary) | "last_trade"
 }
 
+// dollars is Kalshi's 2026 price encoding: a decimal string ("0.5600").
+// The integer-cent fields the API launched with stopped being populated —
+// the market column silently vanished when they did — so every decode
+// carries both and cents() folds them together.
+type dollars string
+
+func (d dollars) cents() int {
+	if d == "" {
+		return 0
+	}
+	v, err := strconv.ParseFloat(string(d), 64)
+	if err != nil {
+		return 0
+	}
+	return int(math.Round(v * 100))
+}
+
+func centsOf(old int, neu dollars) int {
+	if old > 0 {
+		return old
+	}
+	return neu.cents()
+}
+
 type marketResp struct {
 	Market struct {
-		Ticker    string `json:"ticker"`
-		Title     string `json:"title"`
-		Status    string `json:"status"`
-		YesBid    int    `json:"yes_bid"`
-		YesAsk    int    `json:"yes_ask"`
-		LastPrice int    `json:"last_price"`
+		Ticker     string  `json:"ticker"`
+		Title      string  `json:"title"`
+		Status     string  `json:"status"`
+		YesBid     int     `json:"yes_bid"`
+		YesAsk     int     `json:"yes_ask"`
+		LastPrice  int     `json:"last_price"`
+		YesBidD    dollars `json:"yes_bid_dollars"`
+		YesAskD    dollars `json:"yes_ask_dollars"`
+		LastPriceD dollars `json:"last_price_dollars"`
 	} `json:"market"`
 }
 
@@ -57,7 +87,9 @@ func ParseMarket(body []byte) (Market, error) {
 	}
 	m := Market{
 		Ticker: r.Market.Ticker, Title: r.Market.Title, Status: r.Market.Status,
-		YesBid: r.Market.YesBid, YesAsk: r.Market.YesAsk, LastPrice: r.Market.LastPrice,
+		YesBid:    centsOf(r.Market.YesBid, r.Market.YesBidD),
+		YesAsk:    centsOf(r.Market.YesAsk, r.Market.YesAskD),
+		LastPrice: centsOf(r.Market.LastPrice, r.Market.LastPriceD),
 	}
 	m.ImpliedProb = impliedProb(m.YesBid, m.YesAsk, m.LastPrice)
 	return m, nil
@@ -398,13 +430,16 @@ type eventsPage struct {
 	Events []struct {
 		Title   string `json:"title"`
 		Markets []struct {
-			Ticker      string `json:"ticker"`
-			Title       string `json:"title"`
-			YesSubTitle string `json:"yes_sub_title"`
-			Status      string `json:"status"`
-			YesBid      int    `json:"yes_bid"`
-			YesAsk      int    `json:"yes_ask"`
-			LastPrice   int    `json:"last_price"`
+			Ticker      string  `json:"ticker"`
+			Title       string  `json:"title"`
+			YesSubTitle string  `json:"yes_sub_title"`
+			Status      string  `json:"status"`
+			YesBid      int     `json:"yes_bid"`
+			YesAsk      int     `json:"yes_ask"`
+			LastPrice   int     `json:"last_price"`
+			YesBidD     dollars `json:"yes_bid_dollars"`
+			YesAskD     dollars `json:"yes_ask_dollars"`
+			LastPriceD  dollars `json:"last_price_dollars"`
 		} `json:"markets"`
 	} `json:"events"`
 }
@@ -421,12 +456,15 @@ func ParseEventsPage(body []byte) ([]Candidate, string, error) {
 			if m.Status != "" && m.Status != "active" && m.Status != "open" {
 				continue
 			}
+			bid := centsOf(m.YesBid, m.YesBidD)
+			ask := centsOf(m.YesAsk, m.YesAskD)
+			last := centsOf(m.LastPrice, m.LastPriceD)
 			out = append(out, Candidate{
 				EventTitle: ev.Title,
 				Market: Market{
 					Ticker: m.Ticker, Title: m.Title, Status: m.Status,
-					YesBid: m.YesBid, YesAsk: m.YesAsk, LastPrice: m.LastPrice,
-					ImpliedProb: impliedProb(m.YesBid, m.YesAsk, m.LastPrice),
+					YesBid: bid, YesAsk: ask, LastPrice: last,
+					ImpliedProb: impliedProb(bid, ask, last),
 				},
 			})
 		}
@@ -440,14 +478,24 @@ func ParseEventJSON(body []byte) ([]Candidate, error) {
 	var d struct {
 		Event struct {
 			Title   string `json:"title"`
+			// The nested-market shape needs the *_dollars fields too. The
+			// integer cent fields stopped being populated in Kalshi's 2026
+			// API and come back null here exactly as they do on the single
+			// market endpoint, so an event's markets decoded to 0/0 and the
+			// whole set priced at zero. Chat still showed numbers only
+			// because fillPrice falls back to the last trade, which is a
+			// staler figure than the live bid/ask mid this restores.
 			Markets []struct {
-				Ticker      string `json:"ticker"`
-				Title       string `json:"title"`
-				YesSubTitle string `json:"yes_sub_title"`
-				Status      string `json:"status"`
-				YesBid      int    `json:"yes_bid"`
-				YesAsk      int    `json:"yes_ask"`
-				LastPrice   int    `json:"last_price"`
+				Ticker      string  `json:"ticker"`
+				Title       string  `json:"title"`
+				YesSubTitle string  `json:"yes_sub_title"`
+				Status      string  `json:"status"`
+				YesBid      int     `json:"yes_bid"`
+				YesAsk      int     `json:"yes_ask"`
+				LastPrice   int     `json:"last_price"`
+				YesBidD     dollars `json:"yes_bid_dollars"`
+				YesAskD     dollars `json:"yes_ask_dollars"`
+				LastPriceD  dollars `json:"last_price_dollars"`
 			} `json:"markets"`
 		} `json:"event"`
 	}
@@ -460,12 +508,15 @@ func ParseEventJSON(body []byte) ([]Candidate, error) {
 		if m.YesSubTitle != "" {
 			title = m.YesSubTitle
 		}
+		bid := centsOf(m.YesBid, m.YesBidD)
+		ask := centsOf(m.YesAsk, m.YesAskD)
+		last := centsOf(m.LastPrice, m.LastPriceD)
 		out = append(out, Candidate{
 			EventTitle: d.Event.Title,
 			Market: Market{
 				Ticker: m.Ticker, Title: title, Status: m.Status,
-				YesBid: m.YesBid, YesAsk: m.YesAsk, LastPrice: m.LastPrice,
-				ImpliedProb: impliedProb(m.YesBid, m.YesAsk, m.LastPrice),
+				YesBid: bid, YesAsk: ask, LastPrice: last,
+				ImpliedProb: impliedProb(bid, ask, last),
 			},
 		})
 	}
@@ -526,42 +577,89 @@ func anyToken(text, team string) bool {
 	return matchedToken(text, team) != ""
 }
 
+// WordInText reports whether w appears in t as a whole word rather than as
+// a run of letters inside a longer one — plain strings.Contains lets
+// "kings" (from "St Lucia Kings") match inside "Kingsmen", a different
+// team's name that merely starts with the same letters. Exported so
+// cmd/server's own team-title matching (teamInTitle) uses the identical
+// rule instead of a second, driftable copy.
+func WordInText(t, w string) bool {
+	re, err := regexp.Compile(`\b` + regexp.QuoteMeta(w) + `\b`)
+	if err != nil {
+		return strings.Contains(t, w) // pathological input: fall back rather than panic
+	}
+	return re.MatchString(t)
+}
+
 func matchedToken(text, team string) string {
 	for _, tok := range teamTokens(team) {
-		if strings.Contains(text, tok) {
+		if WordInText(text, tok) {
 			return tok
 		}
 	}
 	return ""
 }
 
+// matchStrength scores how a team was found in text: 2 when the token that
+// matched is the team's FULL name, 1 when it is only a single distinctive
+// word. A traced incident showed why the distinction matters: "St Lucia
+// Kings" matched a market titled "Hh Kingsmen Academy" through the single
+// word "kings" (itself only found because "kings" is a substring of
+// "kingsmen" — separately fixed), while the real St Lucia Kings vs Jamaica
+// Kingsmen event, which matched on the full names, existed in the same
+// candidate pool the whole time. Both used to count as an equally good
+// match, tie-broken only by which had live liquidity — essentially
+// arbitrary, since an unrelated live match can easily have tighter
+// bid/ask than one that only just started. A full-name match is
+// structurally much less likely to be a coincidence than one shared word,
+// so it must outrank a weak match outright, not merely tiebreak against it.
+func matchStrength(text, team string) int {
+	tok := matchedToken(text, team)
+	if tok == "" {
+		return 0
+	}
+	if tok == strings.ToLower(strings.TrimSpace(team)) {
+		return 2
+	}
+	return 1
+}
+
 // BestMatch finds the candidate whose event or market title names BOTH
-// teams — one shared word has matched tomorrow's fixture for the same
-// team, and no markets beats wrong markets. Returns (market,
-// matchedTeamName, found), preferring live bid/ask liquidity.
+// teams. Runs two passes: first only full-name matches on both sides, and
+// only if that finds nothing does it fall back to single-word matches
+// (needed for real ESPN/Kalshi nickname disagreements, e.g. "Kandy Royals"
+// vs "Kandy Falcons" sharing just the city). Liquidity still tiebreaks
+// within a pass, never across one — a weak match never outranks a strong
+// one no matter its liquidity. Returns (market, matchedTeamName, found).
 func BestMatch(cands []Candidate, teamA, teamB string) (Market, string, bool) {
-	var best *Candidate
-	bestTeam := ""
-	for i := range cands {
-		text := strings.ToLower(cands[i].EventTitle + " " + cands[i].Market.Title)
-		tokA, tokB := matchedToken(text, teamA), matchedToken(text, teamB)
-		if tokA == "" || tokB == "" || tokA == tokB {
-			continue // both teams matching on one shared word is no match
+	for _, minStrength := range []int{2, 1} {
+		var best *Candidate
+		bestTeam := ""
+		for i := range cands {
+			text := strings.ToLower(cands[i].EventTitle + " " + cands[i].Market.Title)
+			tokA, tokB := matchedToken(text, teamA), matchedToken(text, teamB)
+			if tokA == "" || tokB == "" || tokA == tokB {
+				continue // both teams matching on one shared word is no match
+			}
+			sA, sB := matchStrength(text, teamA), matchStrength(text, teamB)
+			if sA < minStrength || sB < minStrength {
+				continue
+			}
+			matched := teamA
+			if mt := strings.ToLower(cands[i].Market.Title); !anyToken(mt, teamA) && anyToken(mt, teamB) {
+				matched = teamB
+			}
+			hasLiquidity := cands[i].Market.YesBid > 0 && cands[i].Market.YesAsk > 0
+			if best == nil || (hasLiquidity && !(best.Market.YesBid > 0 && best.Market.YesAsk > 0)) {
+				best = &cands[i]
+				bestTeam = matched
+			}
 		}
-		matched := teamA
-		if mt := strings.ToLower(cands[i].Market.Title); !anyToken(mt, teamA) && anyToken(mt, teamB) {
-			matched = teamB
-		}
-		hasLiquidity := cands[i].Market.YesBid > 0 && cands[i].Market.YesAsk > 0
-		if best == nil || (hasLiquidity && !(best.Market.YesBid > 0 && best.Market.YesAsk > 0)) {
-			best = &cands[i]
-			bestTeam = matched
+		if best != nil {
+			return best.Market, bestTeam, true
 		}
 	}
-	if best == nil {
-		return Market{}, "", false
-	}
-	return best.Market, bestTeam, true
+	return Market{}, "", false
 }
 
 var (
@@ -575,6 +673,24 @@ var (
 // background goroutine when stale — a chat turn must never block for the
 // multi-page Kalshi crawl (up to 10 sequential requests). First-ever call
 // returns empty; the next one sees results.
+// WarmScan populates the candidate cache before the first request needs it.
+// openMarketScan returns whatever it has and refreshes behind the scenes, so
+// a freshly started process answers with NO market for the first minute or
+// so. Two things came out of that gap on 2026-08-12: the market column
+// silently vanished from the win table after each deploy, and a betting
+// answer with no market in context turned the model's own 52% heuristic into
+// "the market prices them closely at -109".
+func WarmScan() {
+	scanMu.Lock()
+	if scanInFlight {
+		scanMu.Unlock()
+		return
+	}
+	scanInFlight = true
+	scanMu.Unlock()
+	refreshScan()
+}
+
 func openMarketScan() []Candidate {
 	scanMu.Lock()
 	defer scanMu.Unlock()

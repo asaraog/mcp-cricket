@@ -228,3 +228,68 @@ func TestParseTradeHistoryJSON(t *testing.T) {
 		t.Error("order should follow the feed (newest first)")
 	}
 }
+
+// "kings" is a literal substring of "kingsmen": plain strings.Contains let
+// BestMatch treat a candidate mentioning only "Kingsmen" as if it also
+// named a team called "Kings" — a live incident showed a market titled
+// "Victoria" get treated as this match's data for a "St Lucia Kings"
+// fixture, and Kalshi's real data never contained that title anywhere,
+// which points at exactly this: an unrelated candidate satisfying both
+// team tokens by accident rather than the real event being matched.
+func TestBestMatchWordBoundaryNotSubstring(t *testing.T) {
+	cands := []Candidate{
+		{EventTitle: "Some Unrelated Kingsmen Society Vote",
+			Market: Market{Ticker: "UNRELATED", Title: "Some Unrelated Kingsmen Society Vote: Yes"}},
+	}
+	if _, _, ok := BestMatch(cands, "St Lucia Kings", "Jamaica Kingsmen"); ok {
+		t.Error(`an unrelated candidate mentioning only "Kingsmen" should not ` +
+			`satisfy "St Lucia Kings" via the "kings" substring inside it`)
+	}
+}
+
+func TestWordInTextBoundary(t *testing.T) {
+	if WordInText("hh kingsmen academy", "kings") {
+		t.Error(`"kings" should not match inside "kingsmen"`)
+	}
+	if !WordInText("hh kingsmen academy", "kingsmen") {
+		t.Error(`"kingsmen" should match itself as a whole word`)
+	}
+	if !WordInText("st lucia kings", "kings") {
+		t.Error(`"kings" should match as its own word`)
+	}
+}
+
+// The real incident, reconstructed from real Kalshi titles fetched
+// directly from the API: the genuine St Lucia Kings vs Jamaica Kingsmen
+// event existed in the same candidate pool as the spurious "Act Comets vs
+// Hh Kingsmen Academy" collision candidate, at the same time. The old
+// single-tier matching treated both as equally valid and tie-broke on
+// liquidity — arbitrary, since an unrelated live match can easily have
+// tighter bid/ask than the real one. BestMatch must now prefer the real,
+// full-name match outright, EVEN when the spurious one has better
+// liquidity and comes first in iteration order — both set up here to
+// stack against the correct answer, so a pass here means the fix holds
+// under the worst case, not just the easy one.
+func TestBestMatchPrefersFullNameOverLiquidity(t *testing.T) {
+	spuriousFirstWithLiquidity := []Candidate{
+		{EventTitle: "Act Comets vs Hh Kingsmen Academy",
+			Market: Market{Ticker: "KXT20MATCH-26AUG210130KINACT-KIN",
+				Title: "Act Comets vs Hh Kingsmen Academy men's cricket match: Hh Kingsmen Academy wins",
+				YesBid: 50, YesAsk: 52}},
+		{EventTitle: "St. Lucia Kings vs Jamaica Kingsmen",
+			Market: Market{Ticker: "KXCPLMATCH-26AUG211900JAMSTL-STL",
+				Title: "St. Lucia Kings vs Jamaica Kingsmen men's cricket match: St. Lucia Kings wins"}},
+		{EventTitle: "St. Lucia Kings vs Jamaica Kingsmen",
+			Market: Market{Ticker: "KXCPLMATCH-26AUG211900JAMSTL-JAM",
+				Title: "St. Lucia Kings vs Jamaica Kingsmen men's cricket match: Jamaica Kingsmen wins"}},
+	}
+	m, team, ok := BestMatch(spuriousFirstWithLiquidity, "St Lucia Kings", "Jamaica Kingsmen")
+	if !ok {
+		t.Fatal("expected a match")
+	}
+	if !strings.HasPrefix(m.Ticker, "KXCPLMATCH") {
+		t.Errorf("picked %s (%q) — the real St Lucia Kings vs Jamaica Kingsmen "+
+			"event, not the spurious Kingsmen collision", m.Ticker, m.Title)
+	}
+	_ = team
+}
