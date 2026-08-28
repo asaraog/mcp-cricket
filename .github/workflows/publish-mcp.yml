@@ -1,0 +1,50 @@
+# Publishing to the MCP registry by hand means a GitHub device-code login
+# every time, and the token it mints expires quickly enough that a second
+# publish in the same sitting asks again. A workflow authenticates as this
+# repository instead, via OIDC, so a change to server.json publishes itself.
+name: Publish to MCP Registry
+
+on:
+  push:
+    branches: [main]
+    paths: ["server.json"]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # the OIDC token the registry authenticates against
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/download/v${VERSION}/mcp-publisher_linux_amd64.tar.gz" \
+            | tar xz mcp-publisher
+        env:
+          VERSION: 1.8.1
+
+      # The registry rejects a republish of a version it already holds, so a
+      # publish only happens when server.json names a new one. Checking here
+      # keeps a no-op push from failing the workflow.
+      - name: Skip if this version is already published
+        id: check
+        run: |
+          name=$(jq -r .name server.json)
+          version=$(jq -r .version server.json)
+          published=$(curl -fsSL "https://registry.modelcontextprotocol.io/v0/servers?search=${name}" \
+            | jq -r --arg n "$name" '.servers[] | select(.server.name == $n) | .server.version' | head -1)
+          echo "server=$name version=$version published=${published:-none}"
+          if [ "$version" = "$published" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Authenticate and publish
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
