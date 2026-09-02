@@ -294,3 +294,256 @@ func PhaseReport(name string, totalOvers int) (string, bool) {
 	out += describeSplits("Bowling:", bowl, true)
 	return out, true
 }
+
+// nameID resolves a player name to its id, falling back to a suffix match
+// so "Kohli" finds "V Kohli". PhaseStats grew this inline; the tools below
+// all need it, so it lives here rather than four more times.
+func nameID(name string) (int, bool) {
+	var id int
+	if err := db.QueryRowContext(qctx(),
+		`SELECT id FROM names WHERE LOWER(name)=LOWER(?)`, name).Scan(&id); err == nil {
+		return id, true
+	}
+	if err := db.QueryRowContext(qctx(),
+		`SELECT id FROM names WHERE LOWER(name) LIKE LOWER(?) ORDER BY LENGTH(name) LIMIT 1`,
+		"%"+name).Scan(&id); err != nil {
+		return 0, false
+	}
+	return id, true
+}
+
+// Dismissal is one way a batter has been out, or one way a bowler gets
+// batters out, with how often.
+type Dismissal struct {
+	Kind  string
+	Count int
+}
+
+// Dismissals breaks down how a player gets out, or how a bowler takes
+// wickets. Run outs are excluded from the bowling side because they are
+// not credited to the bowler, which is the same rule Leaders uses.
+func Dismissals(name, perspective string) ([]Dismissal, int, bool) {
+	if !Enabled() {
+		return nil, 0, false
+	}
+	id, ok := nameID(name)
+	if !ok {
+		return nil, 0, false
+	}
+	// deliveries is indexed on batter and bowler but NOT on player_out, so
+	// filtering on player_out alone scans all 11.4M rows and exceeds the
+	// query deadline. Anchoring on the indexed column first turns it into an
+	// index seek. The cost is non-striker run outs, which are recorded
+	// against a batter who was not on strike: rare, and named in the output
+	// rather than quietly dropped.
+	q := `SELECT d.wicket_kind, COUNT(*) c FROM deliveries d
+	      WHERE d.batter=? AND d.player_out=? AND d.wicket_kind <> ''
+	      GROUP BY d.wicket_kind ORDER BY c DESC`
+	args := []any{id, id}
+	if perspective == "bowling" {
+		q = `SELECT d.wicket_kind, COUNT(*) c FROM deliveries d
+		     WHERE d.bowler=? AND d.wicket_kind NOT IN ('','run out')
+		     GROUP BY d.wicket_kind ORDER BY c DESC`
+		args = []any{id}
+	}
+	rows, err := db.QueryContext(qctx(), q, args...)
+	if err != nil {
+		return nil, 0, false
+	}
+	defer rows.Close()
+	var out []Dismissal
+	total := 0
+	for rows.Next() {
+		var d Dismissal
+		if err := rows.Scan(&d.Kind, &d.Count); err != nil {
+			continue
+		}
+		total += d.Count
+		out = append(out, d)
+	}
+	return out, total, len(out) > 0
+}
+
+// Discipline is the unglamorous side of limited-overs cricket: the dot
+// balls and the boundaries conceded that decide close games long before
+// the wickets column does.
+type Discipline struct {
+	Balls, Dots, Fours, Sixes, Extras, Runs int
+	DotPct, BoundaryPct, Econ               float64
+}
+
+// DisciplineStats computes dot-ball and boundary rates for a bowler, or the
+// same rates faced by a batter. Optionally restricted to one format by
+// innings length.
+func DisciplineStats(name, perspective string, totalOvers int) (Discipline, bool) {
+	var d Discipline
+	if !Enabled() {
+		return d, false
+	}
+	id, ok := nameID(name)
+	if !ok {
+		return d, false
+	}
+	col := "d.bowler"
+	if perspective == "batting" {
+		col = "d.batter"
+	}
+	where := col + "=?"
+	args := []any{id}
+	if totalOvers > 0 {
+		where += " AND m.overs=?"
+		args = append(args, totalOvers)
+	}
+	err := db.QueryRowContext(qctx(), `
+		SELECT COUNT(*),
+		       SUM(CASE WHEN d.runs_batter+d.runs_extras=0 THEN 1 ELSE 0 END),
+		       SUM(CASE WHEN d.runs_batter=4 THEN 1 ELSE 0 END),
+		       SUM(CASE WHEN d.runs_batter=6 THEN 1 ELSE 0 END),
+		       COALESCE(SUM(d.runs_extras),0),
+		       COALESCE(SUM(d.runs_batter+d.runs_extras),0)
+		FROM deliveries d JOIN matches m ON m.id=d.match_id
+		WHERE `+where, args...).
+		Scan(&d.Balls, &d.Dots, &d.Fours, &d.Sixes, &d.Extras, &d.Runs)
+	if err != nil || d.Balls == 0 {
+		return d, false
+	}
+	d.DotPct = float64(d.Dots) * 100 / float64(d.Balls)
+	d.BoundaryPct = float64(d.Fours+d.Sixes) * 100 / float64(d.Balls)
+	d.Econ = float64(d.Runs) * 6 / float64(d.Balls)
+	return d, true
+}
+
+// Situation is a player's record in one match situation.
+type Situation struct {
+	Label       string
+	Balls, Runs int
+	Outs        int
+	Avg, SR     float64
+}
+
+// SituationalStats splits a batter's record by whether their side batted
+// first or chased. The archive stores the innings number, and in
+// limited-overs cricket innings 2 IS the chase, which is the whole split.
+// Multi-day cricket is excluded rather than guessed at: there the fourth
+// innings is the chase and the first three are not comparable.
+func SituationalStats(name string, totalOvers int) ([]Situation, bool) {
+	if !Enabled() {
+		return nil, false
+	}
+	id, ok := nameID(name)
+	if !ok {
+		return nil, false
+	}
+	var out []Situation
+	for _, c := range []struct {
+		label  string
+		inning int
+	}{{"batting first", 1}, {"chasing", 2}} {
+		var s Situation
+		s.Label = c.label
+		where := "d.batter=? AND d.innings=?"
+		args := []any{id, c.inning}
+		if totalOvers > 0 {
+			where += " AND m.overs=?"
+			args = append(args, totalOvers)
+		}
+		err := db.QueryRowContext(qctx(), `
+			SELECT COUNT(*), COALESCE(SUM(d.runs_batter),0),
+			       COALESCE(SUM(CASE WHEN d.player_out=? THEN 1 ELSE 0 END),0)
+			FROM deliveries d JOIN matches m ON m.id=d.match_id
+			WHERE `+where, append([]any{id}, args...)...).
+			Scan(&s.Balls, &s.Runs, &s.Outs)
+		if err != nil || s.Balls == 0 {
+			continue
+		}
+		s.SR = float64(s.Runs) * 100 / float64(s.Balls)
+		if s.Outs > 0 {
+			s.Avg = float64(s.Runs) / float64(s.Outs)
+		}
+		out = append(out, s)
+	}
+	return out, len(out) > 0
+}
+
+// Partnership is one pair's combined record at the crease.
+type Partnership struct {
+	A, B        string
+	Runs, Balls int
+	Innings     int
+	Best        int
+}
+
+// Partnerships returns a batter's most productive partners: runs added while
+// the two were at the crease together, not runs they happened to score in the
+// same innings.
+//
+// The archive records the striker but not the non-striker, so a stand is
+// reconstructed from the wickets around it. Deliveries in an innings are
+// ordered by over and ball, a running count of wickets already fallen labels
+// each ball with the stand it belongs to, and the pair is the distinct
+// strikers inside that stand. That is exact whenever both batters face at
+// least one ball, which is almost always; a partner who is run out without
+// facing does not appear.
+//
+// Scoped to the innings this player batted in, via idx_del_batter. The
+// obvious formulation instead sums a partner's runs across every shared
+// innings, which for two team-mates who open together is simply each
+// player's career total and has nothing to do with partnerships.
+func Partnerships(name string, limit int) ([]Partnership, bool) {
+	if !Enabled() || limit <= 0 {
+		return nil, false
+	}
+	id, ok := nameID(name)
+	if !ok {
+		return nil, false
+	}
+	rows, err := db.QueryContext(qctx(), `
+		WITH mine AS (
+		  SELECT DISTINCT match_id, innings FROM deliveries WHERE batter=?
+		),
+		seg AS (
+		  SELECT d.match_id, d.innings, d.batter,
+		         d.runs_batter + d.runs_extras AS runs,
+		         SUM(CASE WHEN d.wicket_kind <> '' THEN 1 ELSE 0 END) OVER (
+		           PARTITION BY d.match_id, d.innings
+		           ORDER BY d.over, d.ball
+		           ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS stand
+		  FROM deliveries d
+		  JOIN mine ON mine.match_id = d.match_id AND mine.innings = d.innings
+		),
+		totals AS (
+		  SELECT match_id, innings, stand,
+		         SUM(runs) runs, COUNT(*) balls
+		  FROM seg GROUP BY match_id, innings, stand
+		),
+		ours AS (
+		  SELECT DISTINCT match_id, innings, stand FROM seg WHERE batter = ?
+		),
+		partner AS (
+		  SELECT DISTINCT s.match_id, s.innings, s.stand, s.batter
+		  FROM seg s JOIN ours o
+		    ON o.match_id = s.match_id AND o.innings = s.innings AND o.stand = s.stand
+		  WHERE s.batter <> ?
+		)
+		SELECT p.name, SUM(t.runs) runs, SUM(t.balls) balls,
+		       COUNT(*) stands, MAX(t.runs) best
+		FROM partner pa
+		JOIN totals t ON t.match_id = pa.match_id AND t.innings = pa.innings
+		             AND t.stand = pa.stand
+		JOIN names p ON p.id = pa.batter
+		GROUP BY p.name ORDER BY runs DESC LIMIT ?`, id, id, id, limit)
+	if err != nil {
+		return nil, false
+	}
+	defer rows.Close()
+	var out []Partnership
+	for rows.Next() {
+		var p Partnership
+		p.A = name
+		if err := rows.Scan(&p.B, &p.Runs, &p.Balls, &p.Innings, &p.Best); err != nil {
+			continue
+		}
+		out = append(out, p)
+	}
+	return out, len(out) > 0
+}

@@ -273,6 +273,43 @@ func buildTools() []Tool {
 			handler: marketOddsTool,
 		},
 		{
+			Name:        "cricket_dismissals",
+			Description: "How a batter gets out, or how a bowler takes wickets, across the ball-by-ball archive: bowled, caught, lbw, stumped, run out and the rest, with counts and shares. Run outs are excluded from the bowling view because they are not credited to the bowler.",
+			InputSchema: obj(map[string]any{
+				"player":      str("player name, e.g. 'V Kohli'"),
+				"perspective": str("'batting' (default) for how they get out, 'bowling' for how they take wickets"),
+			}, "player"),
+			handler: dismissalsTool,
+		},
+		{
+			Name:        "cricket_discipline",
+			Description: "Dot-ball percentage, boundary percentage and economy for a bowler, or the same rates faced by a batter. These are the numbers that decide limited-overs games well before the wickets column does, and no scorecard shows them.",
+			InputSchema: obj(map[string]any{
+				"player":      str("player name, e.g. 'JJ Bumrah'"),
+				"perspective": str("'bowling' (default) or 'batting'"),
+				"total_overs": inte("restrict to one format: 20 for T20, 50 for ODI. Omit for all"),
+			}, "player"),
+			handler: disciplineTool,
+		},
+		{
+			Name:        "cricket_situational",
+			Description: "A batter's record batting first versus chasing, in limited-overs cricket: runs, balls, average and strike rate for each. Multi-day cricket is excluded rather than guessed at, since there the fourth innings is the chase and the first three are not comparable.",
+			InputSchema: obj(map[string]any{
+				"player":      str("player name, e.g. 'V Kohli'"),
+				"total_overs": inte("restrict to one format: 20 for T20, 50 for ODI. Omit for all"),
+			}, "player"),
+			handler: situationalTool,
+		},
+		{
+			Name:        "cricket_partnerships",
+			Description: "A batter's most productive partnerships: runs added while the two were at the crease together, how many stands, and their best. Stands are reconstructed by segmenting each innings at the wickets that fall, since the archive records the striker but not the non-striker.",
+			InputSchema: obj(map[string]any{
+				"player": str("player name, e.g. 'RG Sharma'"),
+				"limit":  inte("how many partners (default 8)"),
+			}, "player"),
+			handler: partnershipsTool,
+		},
+		{
 			Name:        "cricket_live_matches",
 			Description: "Currently live and upcoming cricket matches with scores where available (ESPNcricinfo public feeds).",
 			InputSchema: obj(map[string]any{}),
@@ -558,6 +595,113 @@ func marketOddsTool(args map[string]any) (string, error) {
 	out.WriteString("\nA price is the crowd's implied probability. To judge whether it looks rich or cheap, compare it with cricket_win_probability for the current match state: the difference between the two is the edge a trader would be claiming. Remember the market can see injuries, weather and team news that a state-based model cannot.\n")
 	out.WriteString("Informational only, not advice. Event contracts are legal in some US states and not others.")
 	return out.String(), nil
+}
+
+func dismissalsTool(args map[string]any) (string, error) {
+	name := argStr(args, "player")
+	if name == "" {
+		return "", fmt.Errorf("need a player")
+	}
+	persp := argStr(args, "perspective")
+	if persp != "bowling" {
+		persp = "batting"
+	}
+	rows, total, ok := history.Dismissals(name, persp)
+	if !ok {
+		return "", fmt.Errorf("could not read dismissals for %q — either the name "+
+			"is not in the archive, or the query did not finish; try the exact "+
+			"archive spelling, e.g. 'V Kohli' rather than 'Virat Kohli'", name)
+	}
+	verb := "has been out"
+	if persp == "bowling" {
+		verb = "has taken wickets"
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s — how %s %s (%d in the archive):\n", name, name, verb, total)
+	for _, d := range rows {
+		fmt.Fprintf(&b, "  %-14s %4d  (%.0f%%)\n", d.Kind, d.Count,
+			float64(d.Count)*100/float64(total))
+	}
+	return b.String(), nil
+}
+
+func disciplineTool(args map[string]any) (string, error) {
+	name := argStr(args, "player")
+	if name == "" {
+		return "", fmt.Errorf("need a player")
+	}
+	persp := argStr(args, "perspective")
+	if persp != "batting" {
+		persp = "bowling"
+	}
+	overs, _ := argInt(args, "total_overs")
+	d, ok := history.DisciplineStats(name, persp, overs)
+	if !ok {
+		return "", fmt.Errorf("no %s record for %q in the archive", persp, name)
+	}
+	scope := "all formats"
+	if overs > 0 {
+		scope = fmt.Sprintf("%d-over cricket", overs)
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s — %s discipline, %s (%d balls):\n", name, persp, scope, d.Balls)
+	fmt.Fprintf(&b, "  dot balls    %5.1f%%  (%d)\n", d.DotPct, d.Dots)
+	fmt.Fprintf(&b, "  boundaries   %5.1f%%  (%d fours, %d sixes)\n", d.BoundaryPct, d.Fours, d.Sixes)
+	if persp == "bowling" {
+		fmt.Fprintf(&b, "  economy      %5.2f   (%d runs, %d in extras)\n", d.Econ, d.Runs, d.Extras)
+	} else {
+		fmt.Fprintf(&b, "  strike rate  %5.1f\n", float64(d.Runs-d.Extras)*100/float64(d.Balls))
+	}
+	b.WriteString("A high dot-ball share is the bowler's version of a strike rate: it is how pressure is built, and it decides close limited-overs games long before wickets do.")
+	return b.String(), nil
+}
+
+func situationalTool(args map[string]any) (string, error) {
+	name := argStr(args, "player")
+	if name == "" {
+		return "", fmt.Errorf("need a player")
+	}
+	overs, _ := argInt(args, "total_overs")
+	rows, ok := history.SituationalStats(name, overs)
+	if !ok {
+		return "", fmt.Errorf("no limited-overs batting record for %q", name)
+	}
+	scope := "all limited-overs cricket"
+	if overs > 0 {
+		scope = fmt.Sprintf("%d-over cricket", overs)
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s — batting first vs chasing, %s:\n", name, scope)
+	for _, s := range rows {
+		fmt.Fprintf(&b, "  %-14s %5d runs off %4d balls, avg %5.1f, SR %5.1f\n",
+			s.Label, s.Runs, s.Balls, s.Avg, s.SR)
+	}
+	return b.String(), nil
+}
+
+func partnershipsTool(args map[string]any) (string, error) {
+	name := argStr(args, "player")
+	if name == "" {
+		return "", fmt.Errorf("need a player")
+	}
+	limit, ok := argInt(args, "limit")
+	if !ok || limit <= 0 || limit > 25 {
+		limit = 8
+	}
+	rows, found := history.Partnerships(name, limit)
+	if !found {
+		return "", fmt.Errorf("could not read partnerships for %q — either the name "+
+			"is not in the archive, or the query did not finish; try the exact "+
+			"archive spelling, e.g. 'RG Sharma' rather than 'Rohit Sharma'", name)
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "%s — most productive partnerships:\n", name)
+	for _, p := range rows {
+		fmt.Fprintf(&b, "  with %-22s %5d runs in %3d stands, best %d\n",
+			p.B, p.Runs, p.Innings, p.Best)
+	}
+	b.WriteString("Runs added while both were at the crease. Stands are reconstructed from the wickets around them, since the archive records the striker and not the non-striker; a partner run out without facing a ball does not appear.")
+	return b.String(), nil
 }
 
 func explainTermTool(args map[string]any) (string, error) {
