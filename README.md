@@ -10,15 +10,48 @@
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server that gives
 AI assistants real cricket knowledge: a **calibrated win-probability model**, a
-**ball-by-ball archive of 22,000+ matches**, career records, and live scores.
+**ball-by-ball archive of 22,000+ matches**, live prediction-market prices,
+career records, and live scores.
 
-Built for MCP clients such as Claude Desktop and Cursor, so you can ask cricket
-questions in plain language and get answers computed from data instead of
-recalled from training.
+Ask cricket questions in plain language and get answers computed from data
+rather than recalled from training.
 
-**No API key required.** The archive is built from the freely available
-[Cricsheet](https://cricsheet.org) dataset, and live scores come from public
-endpoints.
+## ⚡ Add it in one step
+
+It is hosted. There is nothing to install, download, build or configure.
+
+```
+https://cricketfornoobs.com/mcp
+```
+
+Paste that into your client's connector settings and you are done.
+
+| Client | Where |
+|---|---|
+| **Claude** (free plan included) | Customize → Connectors → Add custom connector |
+| **ChatGPT** | Settings → Apps → Developer mode → add server |
+| **Claude Code** | `claude mcp add --transport http cricket https://cricketfornoobs.com/mcp` |
+| **Cursor / VS Code** | one-click buttons at [cricketfornoobs.com/mcp](https://cricketfornoobs.com/mcp) |
+| **Gemini CLI** | add `{"cricket": {"httpUrl": "https://cricketfornoobs.com/mcp"}}` to `~/.gemini/settings.json` |
+
+No account, no API key, no data pipeline. Read-only.
+
+Prefer to run it on your own machine? See [Quick start](#-quick-start) below:
+same tools, one static binary.
+
+## 💬 Things to ask it
+
+- *"Who's winning the India match right now, and what does the model say?"*
+- *"Who is favoured at 149 for 7 chasing 178 with three overs left?"*
+- *"How does Kohli bat against Bumrah in T20s?"*
+- *"What does the market think versus your model for Welsh Fire vs Southern Brave?"*
+- *"How does Bumrah get his wickets — bowled, caught, lbw?"*
+- *"What's Rashid Khan's dot-ball percentage in T20s?"*
+- *"Is Kohli better batting first or chasing?"*
+- *"Who does Rohit Sharma score most of his runs with?"*
+- *"Does Grand Prairie Stadium favour chasing?"*
+- *"Show me Pooran's death-overs record."*
+- *"What actually is a googly?"*
 
 The same win model runs in production at
 **[cricketfornoobs.com](https://cricketfornoobs.com)**, a live cricket explainer
@@ -53,6 +86,10 @@ Most sports MCP servers wrap a scores API. This one ships analysis:
 | `cricket_venue_stats` | Ground report: average first-innings score, chase win rate |
 | `cricket_leaders` | League and season leaderboards for runs or wickets |
 | `cricket_team_form` | A team's recent archived results |
+| `cricket_dismissals` | How a batter gets out, or how a bowler takes wickets |
+| `cricket_discipline` | Dot-ball and boundary percentage, the numbers no scorecard shows |
+| `cricket_situational` | A batter's record batting first versus chasing |
+| `cricket_partnerships` | Runs added with each partner at the crease, and the best stand |
 | `cricket_market_odds` | Live prediction-market prices (Kalshi) beside this model's number |
 | `cricket_live_matches` | Matches live and upcoming right now |
 | `cricket_explain_term` | Any cricket term, with its baseball equivalent |
@@ -120,16 +157,6 @@ python3 scripts/histgen.py all_json.zip history.db
 Then point `HISTORY_DB` at the result. Limited-overs-only archives work too —
 tools degrade gracefully when a format is absent.
 </details>
-
-## 💬 Example prompts
-
-- *"Who is favoured at 149 for 7 chasing 178 with three overs left?"*
-- *"How does Kohli do against Bumrah in T20s?"*
-- *"Does Grand Prairie Stadium favour chasing?"*
-- *"Show me Pooran's death-overs record."*
-- *"Who led the IPL run charts?"*
-- *"What actually is a googly?"*
-- *"What does the market think versus your model for Welsh Fire vs Southern Brave?"*
 
 ## ⚙️ Configuration
 
