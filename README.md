@@ -63,7 +63,7 @@ MCP client.
 Most sports MCP servers wrap a scores API. This one ships analysis:
 
 - **Win probability from a fitted model** — logistic regression per format and
-  innings over 17,907 matches (5.6M ball states), with pre-match Elo ratings.
+  innings over 10,847 matches (3.4M ball states), with pre-match Elo ratings.
   Held-out log loss 0.42 (T20 chases) / 0.40 (ODI chases); ~91% accurate on
   confident calls. It knows that 149/7 chasing 178 is not the same story as
   149/2.
