@@ -274,7 +274,7 @@ func TestBestMatchPrefersFullNameOverLiquidity(t *testing.T) {
 	spuriousFirstWithLiquidity := []Candidate{
 		{EventTitle: "Act Comets vs Hh Kingsmen Academy",
 			Market: Market{Ticker: "KXT20MATCH-26AUG210130KINACT-KIN",
-				Title: "Act Comets vs Hh Kingsmen Academy men's cricket match: Hh Kingsmen Academy wins",
+				Title:  "Act Comets vs Hh Kingsmen Academy men's cricket match: Hh Kingsmen Academy wins",
 				YesBid: 50, YesAsk: 52}},
 		{EventTitle: "St. Lucia Kings vs Jamaica Kingsmen",
 			Market: Market{Ticker: "KXCPLMATCH-26AUG211900JAMSTL-STL",
@@ -292,4 +292,65 @@ func TestBestMatchPrefersFullNameOverLiquidity(t *testing.T) {
 			"event, not the spurious Kingsmen collision", m.Ticker, m.Title)
 	}
 	_ = team
+}
+
+// Volume comes from volume_fp on the nested-markets shape. The Minor League
+// priced-book rule (milclive.PriceView) accepts a spread up to 20¢ only with
+// real volume behind it, so a silent zero here would turn every moderately
+// wide but well-traded book into "no price". Fixture is a real
+// /events?with_nested_markets=true payload.
+func TestParseEventsPageDecodesVolume(t *testing.T) {
+	body := []byte(`{"events":[{"event_ticker":"KXTESTMATCH-X","title":"East Zone vs North East Zone",
+	  "markets":[
+	    {"ticker":"KXTESTMATCH-X-EAS","title":"East Zone wins","status":"active",
+	     "yes_bid_dollars":"0.9900","yes_ask_dollars":"1.0000","last_price_dollars":"0.9900",
+	     "volume_fp":"4360.94"},
+	    {"ticker":"KXTESTMATCH-X-NOR","title":"North East Zone wins","status":"active",
+	     "yes_bid_dollars":"0.0000","yes_ask_dollars":"0.0100","last_price_dollars":"0.0100",
+	     "volume_fp":1200.5}]}]}`)
+	cands, _, err := ParseEventsPage(body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(cands) != 2 {
+		t.Fatalf("got %d candidates, want 2", len(cands))
+	}
+	byTicker := map[string]float64{}
+	for _, c := range cands {
+		byTicker[c.Market.Ticker] = c.Market.Volume
+	}
+	if got := byTicker["KXTESTMATCH-X-EAS"]; got != 4360.94 {
+		t.Errorf("volume = %v, want 4360.94 (volume_fp did not decode)", got)
+	}
+	if got := byTicker["KXTESTMATCH-X-NOR"]; got != 1200.5 {
+		t.Errorf("volume = %v, want 1200.5", got)
+	}
+}
+
+// The regression that emptied the whole market scan in production:
+// volume_fp arrives from Kalshi as a quoted STRING ("4360.94"). Declaring
+// it float64 made the entire page fail to unmarshal, and refreshScan skips
+// any page that errors, so the whole market scan silently went empty.
+//
+// A malformed volume must cost that one number and nothing else — never the
+// page, and never the scan.
+func TestVolumeParseNeverKillsThePage(t *testing.T) {
+	for _, body := range [][]byte{
+		[]byte(`{"events":[{"title":"E","markets":[{"ticker":"T","title":"T wins","status":"active","volume_fp":"nonsense","last_price_dollars":"0.5000"}]}]}`),
+		[]byte(`{"events":[{"title":"E","markets":[{"ticker":"T","title":"T wins","status":"active","volume_fp":null,"last_price_dollars":"0.5000"}]}]}`),
+		[]byte(`{"events":[{"title":"E","markets":[{"ticker":"T","title":"T wins","status":"active","last_price_dollars":"0.5000"}]}]}`),
+	} {
+		cands, _, err := ParseEventsPage(body)
+		if err != nil {
+			t.Errorf("a bad/absent volume must not fail the page: %v", err)
+			continue
+		}
+		if len(cands) != 1 {
+			t.Errorf("expected the market to survive, got %d candidates", len(cands))
+			continue
+		}
+		if cands[0].Market.LastPrice != 50 {
+			t.Errorf("price should still decode, got %d", cands[0].Market.LastPrice)
+		}
+	}
 }
