@@ -94,9 +94,18 @@ Most sports MCP servers wrap a scores API. This one ships analysis:
 | `cricket_market_odds` | Live prediction-market prices (Kalshi) beside this model's number |
 | `cricket_live_matches` | Matches live and upcoming right now |
 | `cricket_explain_term` | Any cricket term, with its baseball equivalent |
-| `cricket_minor_league` | Minor League Cricket (US domestic T20): live scores, situation and win chances from Kalshi's live data — hosted server; coming to the local build |
+| `cricket_minor_league` | Minor League Cricket (US domestic T20): live scores, situation and win chances from Kalshi's live data |
+| `cricket_minor_league_info` | Minor League history, teams, grounds and player records — hosted-only data; the local build points you to the hosted server |
 
 All tools are read-only.
+
+**Minor League Cricket data.** ESPN does not carry the league, so its
+fixtures and scores come from Kalshi's public live data: the schedule, each
+game's score and state, and Kalshi's market beside it. That feed has no
+ball-by-ball commentary and names no batters or bowlers, so neither tool
+can say who is batting, who took a wicket or what happened on a given ball.
+A market figure appears only when Kalshi's book is a real price, and the
+model prices only the chase.
 
 ## 🚀 Quick start
 
@@ -168,6 +177,7 @@ tools degrade gracefully when a format is absent.
 | `HISTORY_DB_URL` | Override the archive download URL |
 | `HISTORY_DB_TOKEN` | Bearer token, if that URL needs auth |
 | `HISTORY_QUERY_TIMEOUT` | Query deadline, default `3s`; raise for heavy leaderboards |
+| `MILC_LIVE` | `off` turns off Minor League Cricket live data |
 
 Live-score tools work without any archive; archive tools report clearly when
 the database is missing rather than inventing an answer.
@@ -206,7 +216,8 @@ jurisdictions and not others.
 
 Ball-by-ball data from [Cricsheet](https://cricsheet.org), licensed
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Live scores
-from public ESPNcricinfo endpoints; market prices from Kalshi's public API.
+from public ESPNcricinfo endpoints, and for Minor League Cricket from Kalshi's
+public live data; market prices from Kalshi's public API.
 This project is unaffiliated with any of them.
 
 ## 📝 License
