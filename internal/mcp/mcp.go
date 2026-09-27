@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/asaraog/mcp-cricket/internal/cricinfo"
 	"github.com/asaraog/mcp-cricket/internal/explainer"
 	"github.com/asaraog/mcp-cricket/internal/glossary"
 	"github.com/asaraog/mcp-cricket/internal/history"
 	"github.com/asaraog/mcp-cricket/internal/kalshi"
 	"github.com/asaraog/mcp-cricket/internal/matchup"
+	"github.com/asaraog/mcp-cricket/internal/milclive"
 	"github.com/asaraog/mcp-cricket/internal/rag"
 )
 
@@ -26,7 +26,13 @@ const (
 // ServerVersion is a var, not a const, so the release build can stamp the
 // git tag into it with -ldflags -X. A const would be folded at compile time
 // and the flag would be silently ignored.
-var ServerVersion = "0.1.0"
+//
+// It is what initialize advertises, and clients cache a server's tool list
+// against it, so it moves whenever the tools do. 0.3.0 matches the hosted
+// server: Minor League Cricket (cricket_minor_league, its games at the end
+// of cricket_live_matches, and cricket_minor_league_info). A client still
+// holding an older list would never offer the new tools.
+var ServerVersion = "0.3.0"
 
 // ---------------------------------------------------------------- protocol
 
@@ -264,8 +270,10 @@ func buildTools() []Tool {
 			handler: teamFormTool,
 		},
 		{
-			Name:        "cricket_market_odds",
-			Description: "Live prediction-market prices for a cricket match from Kalshi (a CFTC-regulated US exchange), shown beside this server's own win probability so the two can be compared. Prices are cents that equal implied probability: 42 means the market prices a 42% chance. Informational only — not betting advice, and event contracts are legal only in some jurisdictions.",
+			Name: "cricket_market_odds",
+			Description: "Live prediction-market prices for a cricket match from Kalshi (a CFTC-regulated US exchange), shown beside this server's own win probability so the two can be compared. Prices are cents that equal implied probability: 42 means the market prices a 42% chance. " +
+				"Minor League Cricket prices come from cricket_minor_league's rule, a market figure only when Kalshi's book is a real price, and this tool gives the same answer for those games. " +
+				"Informational only — not betting advice, and event contracts are legal only in some jurisdictions.",
 			InputSchema: obj(map[string]any{
 				"team_a": str("one team, e.g. 'San Francisco Unicorns'"),
 				"team_b": str("the other team, e.g. 'Guyana Amazon Warriors'"),
@@ -311,9 +319,33 @@ func buildTools() []Tool {
 		},
 		{
 			Name:        "cricket_live_matches",
-			Description: "Currently live and upcoming cricket matches with scores where available (ESPNcricinfo public feeds).",
+			Description: "Currently live and upcoming cricket matches with scores where available (ESPNcricinfo public feeds, plus Minor League Cricket games from Kalshi's live data).",
 			InputSchema: obj(map[string]any{}),
 			handler:     liveMatchesTool,
+		},
+		{
+			Name: "cricket_minor_league",
+			Description: "Scores and win chances for Minor League Cricket (the US domestic T20 league) from Kalshi's public live data: every game live, starting within 3 hours or finished in the last 2 hours, or one team's game. " +
+				"Each game gives its state, start time (ET), score, what the chasing side needs or the result, and win chances: the Kalshi market's midpoint only when its book is a real price, and this server's model only during the chase. " +
+				"Kalshi's feed has no ball-by-ball commentary and no batters or bowlers. If nothing is on, it says when the next game is.",
+			InputSchema: obj(map[string]any{
+				"team": str("optional: a full or partial Minor League Cricket team name, e.g. 'Atlanta Fire' or 'Kingsmen'. Omit for every game on now"),
+			}),
+			handler: minorLeagueTool,
+		},
+		{
+			Name: "cricket_minor_league_info",
+			Description: "Minor League Cricket history, teams, grounds and player records. That data is served only by the hosted server at " + hostedURL + "; " +
+				"this local build answers with a pointer to it. For live Minor League scores and win chances, use cricket_minor_league.",
+			InputSchema: obj(map[string]any{
+				"player":  str("optional: a Minor League Cricket player's name"),
+				"team":    str("optional: a Minor League Cricket team name, e.g. 'Seattle Thunderbolts'"),
+				"season":  inte("optional: a season year, e.g. 2025"),
+				"ground":  str("optional: a ground name"),
+				"leaders": str("optional: 'runs' or 'wickets' for a leaderboard"),
+				"topic":   str("optional: anything else about the league, in plain words"),
+			}),
+			handler: minorLeagueInfoTool,
 		},
 		{
 			Name:        "cricket_explain_term",
@@ -362,6 +394,9 @@ func winProbTool(args map[string]any) (string, error) {
 	}
 	if t, ok := argInt(args, "target"); ok && t > 0 {
 		st.Target = &t
+	}
+	if err := milcModelRefusal(argStr(args, "batting_team"), argStr(args, "bowling_team"), st, milcNow()); err != nil {
+		return "", err
 	}
 	wp := explainer.WinProbability(st)
 	var b strings.Builder
@@ -439,9 +474,14 @@ func matchArchiveTool(args map[string]any) (string, error) {
 	return history.Scorecard(m), nil
 }
 
+// liveMatchesTool lists ESPN's matches, then the Minor League games in the
+// window the site uses. ESPN does not carry that league, so before the
+// second half existed an assistant asked about a Minor League game in play
+// was told nothing was on.
 func liveMatchesTool(_ map[string]any) (string, error) {
-	ms := cricinfo.LiveMatches()
-	if len(ms) == 0 {
+	ms := liveESPN()
+	milc := milcListLines(milcNow())
+	if len(ms) == 0 && len(milc) == 0 {
 		return "No matches listed right now.", nil
 	}
 	var b strings.Builder
@@ -458,6 +498,12 @@ func liveMatchesTool(_ map[string]any) (string, error) {
 			fmt.Fprintf(&b, " starts %s", m.Date)
 		}
 		b.WriteString("\n")
+	}
+	for _, line := range milc {
+		b.WriteString(line + "\n")
+	}
+	if len(milc) > 0 {
+		b.WriteString(milcListNote + "\n")
 	}
 	return b.String(), nil
 }
@@ -566,25 +612,50 @@ func teamFormTool(args map[string]any) (string, error) {
 	return b.String(), nil
 }
 
+// marketOddsTool reports what the exchange is charging for each side, which
+// is the one thing on this server that does not come from a model or an
+// archive: a price other people are actually paying.
+//
+// A Minor League Cricket game never reaches the scan's printout. Its books
+// are mostly 23/73 placeholders nobody has traded, and impliedProb turns
+// one into a midpoint: NYC Titans v Manhattan Yorkers printed "48% implied
+// (48 cents)" for each side, each line twice, while cricket_minor_league on
+// the same server called the same book one that "hasn't formed a real
+// price". So a pairing that names a listed game by exact name, or whose
+// matched market belongs to one, is answered by milcOddsText under the
+// site's priced-book rule instead.
+//
+// Everything else prints one event, each market once. The scan lists every
+// KXT20MATCH market twice (series fetch and generic crawl), and
+// MarketSetFromCandidates groups by title, so two fixtures sharing a title
+// on consecutive days were printed as one set with every line doubled.
 func marketOddsTool(args map[string]any) (string, error) {
 	a, b := argStr(args, "team_a"), argStr(args, "team_b")
 	if a == "" || b == "" {
 		return "", fmt.Errorf("need team_a and team_b")
 	}
+	now := milcNow()
+	all := milclive.AllGames(now)
+	if gs := milcPairGames(all, a, b); len(gs) > 0 {
+		return milcOddsText(gs, now), nil
+	}
 	// The exchange scan is a background crawl; on a freshly started server
 	// the first lookup would otherwise fail while it warms. Wait briefly
 	// rather than reporting a market that does exist as missing.
-	set, _, _, ok := kalshi.FindEventForTeams(a, b)
+	set, matched, _, ok := kalshi.FindEventForTeams(a, b)
 	for i := 0; !ok && i < 12; i++ {
 		time.Sleep(5 * time.Second)
-		set, _, _, ok = kalshi.FindEventForTeams(a, b)
+		set, matched, _, ok = kalshi.FindEventForTeams(a, b)
 	}
 	if !ok || len(set.Markets) == 0 {
 		return "", fmt.Errorf("no open market found for %s v %s — the exchange lists only some fixtures, mostly current T20 leagues", a, b)
 	}
+	if gs := milcEventGames(all, append([]kalshi.Market{matched}, set.Markets...)); len(gs) > 0 {
+		return milcOddsText(gs, now), nil
+	}
 	var out strings.Builder
 	fmt.Fprintf(&out, "Prediction-market prices for %s v %s:\n", a, b)
-	for _, mk := range set.Markets {
+	for _, mk := range oneEvent(set.Markets, matched) {
 		m := kalshi.WithQuotes(mk)
 		if m.HasQuotes() {
 			fmt.Fprintf(&out, "  %s — %.0f%% implied (%.0f cents)\n", m.Title, m.ImpliedProb*100, m.ImpliedProb*100)
@@ -595,6 +666,24 @@ func marketOddsTool(args map[string]any) (string, error) {
 	out.WriteString("\nA price is the crowd's implied probability. To judge whether it looks rich or cheap, compare it with cricket_win_probability for the current match state: the difference between the two is the edge a trader would be claiming. Remember the market can see injuries, weather and team news that a state-based model cannot.\n")
 	out.WriteString("Informational only, not advice. Event contracts are legal in some US states and not others.")
 	return out.String(), nil
+}
+
+// oneEvent keeps the markets of the matched market's own event, each once.
+// The event is read off the market ticker ("...SETHBLOANLA-LOANLA" belongs
+// to "...SETHBLOANLA"), since a MarketSet carries no event ticker of its
+// own.
+func oneEvent(ms []kalshi.Market, matched kalshi.Market) []kalshi.Market {
+	ev := kalshi.EventTickerOf(matched.Ticker)
+	seen := map[string]bool{}
+	var out []kalshi.Market
+	for _, m := range ms {
+		if seen[m.Ticker] || (ev != "" && kalshi.EventTickerOf(m.Ticker) != ev) {
+			continue
+		}
+		seen[m.Ticker] = true
+		out = append(out, m)
+	}
+	return out
 }
 
 func dismissalsTool(args map[string]any) (string, error) {
