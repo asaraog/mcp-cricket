@@ -22,9 +22,22 @@ import (
 	"time"
 )
 
-const apiBase = "https://api.elections.kalshi.com/trade-api/v2"
+// apiBase is a var only so tests can point the package at a local server.
+// Minor League Cricket binds a market by event ticker, and the tests for that
+// path must prove it makes no request at all before the game (the 2-minute
+// scan is the only source then) — which needs a server that fails the test
+// on any hit, not the real exchange.
+var apiBase = "https://api.elections.kalshi.com/trade-api/v2"
 
 var client = &http.Client{Timeout: 10 * time.Second, Transport: tunedTransport()}
+
+// SetBaseURL points every request at u and returns the function that puts
+// the real host back. Tests only; production never calls it.
+func SetBaseURL(u string) (restore func()) {
+	prev := apiBase
+	apiBase = strings.TrimRight(u, "/")
+	return func() { apiBase = prev }
+}
 
 // Market is one Kalshi market with prices in cents (= implied percent).
 type Market struct {
@@ -36,6 +49,10 @@ type Market struct {
 	LastPrice   int     `json:"last_price"`
 	ImpliedProb float64 `json:"implied_prob"`           // derived, 0..1
 	PriceSource string  `json:"price_source,omitempty"` // "" (summary) | "last_trade"
+	// Volume is contracts traded over the market's life. It is what tells a
+	// real price from a placeholder: a Minor League book 20¢ wide is a price
+	// only with real volume behind it (milclive.PriceView).
+	Volume float64 `json:"volume,omitempty"`
 }
 
 // dollars is Kalshi's 2026 price encoding: a decimal string ("0.5600").
@@ -60,6 +77,56 @@ func centsOf(old int, neu dollars) int {
 		return old
 	}
 	return neu.cents()
+}
+
+// flexNum decodes a JSON field that may arrive as a number OR a quoted
+// string. Kalshi sends volume_fp as a string ("4360.94"); declaring it
+// float64 made the whole page fail to unmarshal, and refreshScan skips any
+// page that errors — so one mistyped field silently emptied the entire
+// market scan and every match on the site lost its market column.
+//
+// It never returns an error. A volume that will not parse is worth zero,
+// not worth destroying the page it arrived on.
+type flexNum float64
+
+func (f *flexNum) UnmarshalJSON(b []byte) error {
+	*f = 0
+	t := strings.Trim(strings.TrimSpace(string(b)), `"`)
+	if t == "" || t == "null" {
+		return nil
+	}
+	if v, err := strconv.ParseFloat(t, 64); err == nil {
+		*f = flexNum(v)
+	}
+	return nil
+}
+
+// flexStr decodes a field that should be a string but has no contract
+// saying so. event_ticker is the one Minor League Cricket binds its market
+// by, and the same lesson as flexNum applies: a null, a number or an object
+// in it must cost that one field, never the page of events it arrived on.
+// It never returns an error. A non-string keeps its trimmed raw text so a
+// log line can still show what came back.
+type flexStr string
+
+func (f *flexStr) UnmarshalJSON(b []byte) error {
+	*f = ""
+	t := strings.TrimSpace(string(b))
+	if t == "" || t == "null" {
+		return nil
+	}
+	if strings.HasPrefix(t, `"`) {
+		var s string
+		if err := json.Unmarshal(b, &s); err == nil {
+			*f = flexStr(s)
+		}
+		return nil
+	}
+	if strings.HasPrefix(t, "{") || strings.HasPrefix(t, "[") {
+		return nil // an object is not a ticker, and its text is not either
+	}
+	*f = flexStr(t)
+	return nil
 }
 
 type marketResp struct {
@@ -422,14 +489,22 @@ func GetMarket(ticker string) (Market, error) {
 // Candidate is one open market seen during an events scan.
 type Candidate struct {
 	EventTitle string
-	Market     Market
+	// EventTicker is the event this market belongs to, upper-cased. It is
+	// the only safe key for a Minor League Cricket game: team-name matching
+	// cannot tell "Los Angeles Lashings vs Seattle Thunderbolts" on Saturday
+	// from the same fixture on Sunday, and both are listed at once. Market
+	// itself is unchanged, so nothing that serialises a Market (the LLM
+	// payload, the market guard) sees a new field.
+	EventTicker string
+	Market      Market
 }
 
 type eventsPage struct {
 	Cursor string `json:"cursor"`
 	Events []struct {
-		Title   string `json:"title"`
-		Markets []struct {
+		Title       string  `json:"title"`
+		EventTicker flexStr `json:"event_ticker"`
+		Markets     []struct {
 			Ticker      string  `json:"ticker"`
 			Title       string  `json:"title"`
 			YesSubTitle string  `json:"yes_sub_title"`
@@ -440,6 +515,7 @@ type eventsPage struct {
 			YesBidD     dollars `json:"yes_bid_dollars"`
 			YesAskD     dollars `json:"yes_ask_dollars"`
 			LastPriceD  dollars `json:"last_price_dollars"`
+			VolumeFP    flexNum `json:"volume_fp"`
 		} `json:"markets"`
 	} `json:"events"`
 }
@@ -460,11 +536,13 @@ func ParseEventsPage(body []byte) ([]Candidate, string, error) {
 			ask := centsOf(m.YesAsk, m.YesAskD)
 			last := centsOf(m.LastPrice, m.LastPriceD)
 			out = append(out, Candidate{
-				EventTitle: ev.Title,
+				EventTitle:  ev.Title,
+				EventTicker: strings.ToUpper(strings.TrimSpace(string(ev.EventTicker))),
 				Market: Market{
 					Ticker: m.Ticker, Title: m.Title, Status: m.Status,
 					YesBid: bid, YesAsk: ask, LastPrice: last,
 					ImpliedProb: impliedProb(bid, ask, last),
+					Volume:      float64(m.VolumeFP),
 				},
 			})
 		}
@@ -477,7 +555,8 @@ func ParseEventsPage(body []byte) ([]Candidate, string, error) {
 func ParseEventJSON(body []byte) ([]Candidate, error) {
 	var d struct {
 		Event struct {
-			Title   string `json:"title"`
+			Title       string  `json:"title"`
+			EventTicker flexStr `json:"event_ticker"`
 			// The nested-market shape needs the *_dollars fields too. The
 			// integer cent fields stopped being populated in Kalshi's 2026
 			// API and come back null here exactly as they do on the single
@@ -496,12 +575,17 @@ func ParseEventJSON(body []byte) ([]Candidate, error) {
 				YesBidD     dollars `json:"yes_bid_dollars"`
 				YesAskD     dollars `json:"yes_ask_dollars"`
 				LastPriceD  dollars `json:"last_price_dollars"`
+				// Volume decides whether a 20¢ spread is a real price or
+				// an untraded placeholder, so the live Minor League path
+				// needs it from this endpoint as much as from the scan.
+				VolumeFP flexNum `json:"volume_fp"`
 			} `json:"markets"`
 		} `json:"event"`
 	}
 	if err := json.Unmarshal(body, &d); err != nil {
 		return nil, fmt.Errorf("kalshi event: %w", err)
 	}
+	evTicker := strings.ToUpper(strings.TrimSpace(string(d.Event.EventTicker)))
 	var out []Candidate
 	for _, m := range d.Event.Markets {
 		title := m.Title
@@ -512,11 +596,13 @@ func ParseEventJSON(body []byte) ([]Candidate, error) {
 		ask := centsOf(m.YesAsk, m.YesAskD)
 		last := centsOf(m.LastPrice, m.LastPriceD)
 		out = append(out, Candidate{
-			EventTitle: d.Event.Title,
+			EventTitle:  d.Event.Title,
+			EventTicker: evTicker,
 			Market: Market{
 				Ticker: m.Ticker, Title: title, Status: m.Status,
 				YesBid: bid, YesAsk: ask, LastPrice: last,
 				ImpliedProb: impliedProb(bid, ask, last),
+				Volume:      float64(m.VolumeFP),
 			},
 		})
 	}
@@ -543,6 +629,155 @@ func GetEventMarkets(eventTicker string) ([]Candidate, error) {
 		return nil, err
 	}
 	return ParseEventJSON(body)
+}
+
+// ------------------------------------------------ event-ticker lookups
+
+// A live Minor League Cricket game reads its market through
+// EventMarketsCached rather than the 2-minute scan: two minutes is a whole
+// over, and a price that old next to a score 15 seconds old reads as a
+// market that ignored the last six balls. Every viewer of every Minor
+// League row asks for the same few events, so one fetch per event per TTL
+// serves them all.
+
+type eventEntry struct {
+	cands   []Candidate
+	exp     time.Time
+	fetched time.Time
+}
+
+type eventFlight struct {
+	done  chan struct{}
+	cands []Candidate
+	err   error
+	// gaveUp is set when a reader stopped waiting on this flight because it
+	// ran past eventStaleWait. Later readers of the same flight then fail
+	// at once instead of each waiting again on an exchange that is hanging.
+	gaveUp bool
+}
+
+const (
+	// eventMaxAge is the oldest book shown as "right now". Past it the
+	// entry is never served: a refresh that keeps failing used to leave the
+	// last good book on the card and in chat under "Chance of winning, right
+	// now:" for as long as the outage lasted, with nothing to say how old
+	// it was. The caller falls back to the 2-minute scan, or to no price.
+	eventMaxAge = 2 * time.Minute
+	// eventStaleWait bounds the wait for a refresh replacing a book older
+	// than eventMaxAge.
+	eventStaleWait = 1500 * time.Millisecond
+)
+
+var (
+	eventMu      sync.Mutex
+	eventCache   = map[string]*eventEntry{}
+	eventFlights = map[string]*eventFlight{}
+)
+
+// EventMarketsCached is GetEventMarkets behind a stale-while-revalidate
+// cache with one fetch in flight per ticker. An error is never cached. A
+// book past its TTL but younger than eventMaxAge is served while the
+// refresh runs behind it; an older one never is — the caller waits up to
+// eventStaleWait for the refresh and otherwise gets an error. Only the
+// first call for a ticker waits on the network without that bound.
+func EventMarketsCached(eventTicker string, ttl time.Duration) ([]Candidate, error) {
+	key := NormalizeTicker(eventTicker)
+	if key == "" {
+		return nil, fmt.Errorf("kalshi: empty event ticker")
+	}
+	now := time.Now()
+	eventMu.Lock()
+	e, have := eventCache[key]
+	if have && now.Before(e.exp) {
+		cands := e.cands
+		eventMu.Unlock()
+		return cands, nil
+	}
+	fl, flying := eventFlights[key]
+	if !flying {
+		fl = &eventFlight{done: make(chan struct{})}
+		eventFlights[key] = fl
+		// A bounded map: a season has a few dozen Minor League events, and
+		// a process that somehow collects hundreds is holding dead ones.
+		if len(eventCache) > 500 {
+			eventCache = map[string]*eventEntry{}
+		}
+		go fetchEventFlight(key, fl, ttl)
+	}
+	if have && now.Sub(e.fetched) <= eventMaxAge {
+		cands := e.cands
+		eventMu.Unlock()
+		return cands, nil
+	}
+	if have && fl.gaveUp {
+		eventMu.Unlock()
+		return nil, fmt.Errorf("kalshi: event %s book is older than %v and its refresh is stuck", key, eventMaxAge)
+	}
+	eventMu.Unlock()
+	if !have {
+		<-fl.done
+		return fl.cands, fl.err
+	}
+	t := time.NewTimer(eventStaleWait)
+	defer t.Stop()
+	select {
+	case <-fl.done:
+		if fl.err != nil {
+			return nil, fl.err
+		}
+		if len(fl.cands) == 0 {
+			return nil, fmt.Errorf("kalshi: event %s returned no markets", key)
+		}
+		return fl.cands, nil
+	case <-t.C:
+		eventMu.Lock()
+		fl.gaveUp = true
+		eventMu.Unlock()
+		return nil, fmt.Errorf("kalshi: event %s book is older than %v", key, eventMaxAge)
+	}
+}
+
+// fetchEventFlight runs one flight: fetch, store a good result, publish the
+// outcome to everyone waiting, and clear the flight.
+func fetchEventFlight(key string, fl *eventFlight, ttl time.Duration) {
+	cands, err := GetEventMarkets(key)
+	eventMu.Lock()
+	if err == nil && len(cands) > 0 {
+		at := time.Now()
+		eventCache[key] = &eventEntry{cands: cands, exp: at.Add(ttl), fetched: at}
+	}
+	fl.cands, fl.err = cands, err
+	delete(eventFlights, key)
+	eventMu.Unlock()
+	close(fl.done)
+}
+
+// EventSet returns the markets of one event from the cached scan, bound by
+// event ticker and nothing else. It makes no HTTP request and does not call
+// EnrichAll, so a pre-game Minor League card costs nothing per viewer.
+//
+// The scan lists each KXT20MATCH market twice — once from the series fetch
+// and once from the generic crawl — so markets are de-duplicated by ticker.
+// Without that, "exactly one market per side" failed for every event and
+// every book read as unpriced.
+func EventSet(eventTicker string) (MarketSet, bool) {
+	want := strings.TrimSpace(eventTicker)
+	if want == "" {
+		return MarketSet{}, false
+	}
+	var ms MarketSet
+	seen := map[string]bool{}
+	for _, c := range openMarketScan() {
+		if !strings.EqualFold(c.EventTicker, want) || seen[c.Market.Ticker] {
+			continue
+		}
+		seen[c.Market.Ticker] = true
+		if ms.EventTitle == "" {
+			ms.EventTitle = c.EventTitle
+		}
+		ms.Markets = append(ms.Markets, c.Market)
+	}
+	return ms, len(ms.Markets) > 0
 }
 
 // teamTokens builds match tokens for a team name: the full name plus its
@@ -720,19 +955,7 @@ func refreshScan() {
 		}
 	}
 	for _, s := range series {
-		u := apiBase + "/events?status=open&with_nested_markets=true&limit=200&series_ticker=" + url.QueryEscape(s)
-		resp, err := client.Get(u)
-		if err != nil {
-			continue
-		}
-		body, err := io.ReadAll(resp.Body)
-		resp.Body.Close()
-		if err != nil || resp.StatusCode != http.StatusOK {
-			continue
-		}
-		if cands, _, err := ParseEventsPage(body); err == nil {
-			all = append(all, cands...)
-		}
+		all = append(all, fetchSeries(getBody, s)...)
 	}
 	all = append(all, fetchAllEventPages()...)
 
@@ -790,6 +1013,63 @@ func fetchAllEventPages() []Candidate {
 		cursor = next
 	}
 	return all
+}
+
+// fetchSeries reads one series' open events, following the page cursor for
+// at most three pages. The series fetch used to read one page and throw the
+// cursor away, which was harmless while KXT20MATCH listed 42 events and
+// silently truncates the moment a busy weekend pushes it past 200 — the
+// Minor League games are listed last and would be the ones cut. It stops on
+// an empty cursor or one it has already seen, so a server echoing the same
+// cursor cannot loop it.
+func fetchSeries(get func(string) ([]byte, error), s string) []Candidate {
+	var all []Candidate
+	cursor := ""
+	for page := 0; page < 3; page++ {
+		u := apiBase + "/events?status=open&with_nested_markets=true&limit=200&series_ticker=" + url.QueryEscape(s)
+		if cursor != "" {
+			u += "&cursor=" + url.QueryEscape(cursor)
+		}
+		body, err := get(u)
+		if err != nil {
+			break
+		}
+		cands, next, err := ParseEventsPage(body)
+		if err != nil {
+			break
+		}
+		all = append(all, cands...)
+		if next == "" || next == cursor {
+			break
+		}
+		cursor = next
+	}
+	return all
+}
+
+// getBody is a GET that treats any non-200 as an error.
+func getBody(u string) ([]byte, error) {
+	resp, err := client.Get(u)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("kalshi: HTTP %s", resp.Status)
+	}
+	return body, nil
+}
+
+// SeedScan installs a scan result as though a refresh had just finished,
+// good for an hour so nothing refreshes behind a test. Tests only.
+func SeedScan(c []Candidate) {
+	scanMu.Lock()
+	scanCands, scanExp, scanInFlight = c, time.Now().Add(time.Hour), false
+	scanMu.Unlock()
 }
 
 // FindMarketForTeams auto-detects a Kalshi market naming either team.

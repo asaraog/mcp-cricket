@@ -1,0 +1,2245 @@
+{
+ "cursor": "",
+ "events": [
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP261400ATLLTNATLF",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-24T00:12:21.552089Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T22:00:00Z",
+     "created_time": "2026-09-24T00:01:52.23954Z",
+     "custom_strike": {
+      "cricket_team": "c27444d2-813d-4bb3-8fd0-d8ffafd9a8c8"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261400ATLLTNATLF",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T22:00:00Z",
+     "expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.8200",
+     "latest_expiration_time": "2026-09-28T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.3100",
+     "no_bid_dollars": "0.1800",
+     "no_sub_title": "Atlanta Fire",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T22:00:00Z",
+     "open_interest_fp": "1480.65",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7100",
+     "previous_yes_bid_dollars": "0.2500",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Atlanta Fire wins the Atlanta Fire vs Atlanta Lightning men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Atlanta Fire vs Atlanta Lightning men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261400ATLLTNATLF-ATLF",
+     "title": "Atlanta Fire wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "918.03",
+     "volume_fp": "1605.87",
+     "yes_ask_dollars": "0.8200",
+     "yes_ask_size_fp": "40.79",
+     "yes_bid_dollars": "0.6900",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Atlanta Fire"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T22:00:00Z",
+     "created_time": "2026-09-24T00:01:52.23954Z",
+     "custom_strike": {
+      "cricket_team": "4ea9fd3d-f534-4c2c-bc56-1b1710b82887"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261400ATLLTNATLF",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T22:00:00Z",
+     "expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.2000",
+     "latest_expiration_time": "2026-09-28T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.8000",
+     "no_bid_dollars": "0.7000",
+     "no_sub_title": "Atlanta Lightning",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T22:00:00Z",
+     "open_interest_fp": "1619.27",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7100",
+     "previous_yes_bid_dollars": "0.2500",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Atlanta Lightning wins the Atlanta Fire vs Atlanta Lightning men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Atlanta Fire vs Atlanta Lightning men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261400ATLLTNATLF-ATLLTN",
+     "title": "Atlanta Lightning wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "954.86",
+     "volume_fp": "1834.61",
+     "yes_ask_dollars": "0.3000",
+     "yes_ask_size_fp": "7.58",
+     "yes_bid_dollars": "0.2000",
+     "yes_bid_size_fp": "310.79",
+     "yes_sub_title": "Atlanta Lightning"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "ATLF vs ATLLTN (Sep 26)",
+   "title": "Atlanta Fire vs Atlanta Lightning"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP261400NJSMCAVNENGEAG",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-24T00:12:21.560465Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T22:00:00Z",
+     "created_time": "2026-09-24T00:01:54.561028Z",
+     "custom_strike": {
+      "cricket_team": "f661b769-052c-4fef-af71-5391fe073e72"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261400NJSMCAVNENGEAG",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T22:00:00Z",
+     "expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.3900",
+     "latest_expiration_time": "2026-09-28T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.6200",
+     "no_bid_dollars": "0.4300",
+     "no_sub_title": "New England Eagles",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T22:00:00Z",
+     "open_interest_fp": "101.38",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If New England Eagles wins the New England Eagles vs New Jersey Somerset Cavaliers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the New England Eagles vs New Jersey Somerset Cavaliers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261400NJSMCAVNENGEAG-NENGEAG",
+     "title": "New England Eagles wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "108.23",
+     "volume_fp": "108.23",
+     "yes_ask_dollars": "0.5700",
+     "yes_ask_size_fp": "7.00",
+     "yes_bid_dollars": "0.3800",
+     "yes_bid_size_fp": "7.00",
+     "yes_sub_title": "New England Eagles"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T22:00:00Z",
+     "created_time": "2026-09-24T00:01:54.561028Z",
+     "custom_strike": {
+      "cricket_team": "3375da3e-67b2-4f6e-b83c-b1e8236af060"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261400NJSMCAVNENGEAG",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T22:00:00Z",
+     "expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.6300",
+     "latest_expiration_time": "2026-09-28T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.6100",
+     "no_bid_dollars": "0.4100",
+     "no_sub_title": "New Jersey Somerset Cavaliers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T22:00:00Z",
+     "open_interest_fp": "60.62",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2200",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If New Jersey Somerset Cavaliers wins the New England Eagles vs New Jersey Somerset Cavaliers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the New England Eagles vs New Jersey Somerset Cavaliers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261400NJSMCAVNENGEAG-NJSMCAV",
+     "title": "New Jersey Somerset Cavaliers wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "105.68",
+     "volume_fp": "105.68",
+     "yes_ask_dollars": "0.5900",
+     "yes_ask_size_fp": "6.00",
+     "yes_bid_dollars": "0.3900",
+     "yes_bid_size_fp": "6.00",
+     "yes_sub_title": "New Jersey Somerset Cavaliers"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "NENGEAG vs NJSMCAV (Sep 26)",
+   "title": "New England Eagles vs New Jersey Somerset Cavaliers"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP261400NYCTTNPHL",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-24T00:12:21.569291Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T22:00:00Z",
+     "created_time": "2026-09-24T00:01:50.469291Z",
+     "custom_strike": {
+      "cricket_team": "01e1bbe2-68f3-4c95-aca2-a40ffdcb3767"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261400NYCTTNPHL",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T22:00:00Z",
+     "expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.6800",
+     "latest_expiration_time": "2026-09-28T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.4300",
+     "no_bid_dollars": "0.3100",
+     "no_sub_title": "The Philadelphians",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T22:00:00Z",
+     "open_interest_fp": "42.68",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2300",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If The Philadelphians wins the The Philadelphians vs NYC Titans men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the The Philadelphians vs NYC Titans men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261400NYCTTNPHL-PHL",
+     "title": "The Philadelphians wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "5.48",
+     "volume_fp": "44.83",
+     "yes_ask_dollars": "0.6900",
+     "yes_ask_size_fp": "4.61",
+     "yes_bid_dollars": "0.5700",
+     "yes_bid_size_fp": "32.00",
+     "yes_sub_title": "The Philadelphians"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T22:00:00Z",
+     "created_time": "2026-09-24T00:01:50.469291Z",
+     "custom_strike": {
+      "cricket_team": "7c7cf97d-aee2-43e1-b989-e5a36790125a"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261400NYCTTNPHL",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T22:00:00Z",
+     "expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.5200",
+     "latest_expiration_time": "2026-09-28T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7100",
+     "no_bid_dollars": "0.6200",
+     "no_sub_title": "NYC Titans",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T22:00:00Z",
+     "open_interest_fp": "40.16",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If NYC Titans wins the The Philadelphians vs NYC Titans men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the The Philadelphians vs NYC Titans men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261400NYCTTNPHL-NYCTTN",
+     "title": "NYC Titans wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "44.42",
+     "volume_fp": "51.16",
+     "yes_ask_dollars": "0.3800",
+     "yes_ask_size_fp": "161.28",
+     "yes_bid_dollars": "0.2900",
+     "yes_bid_size_fp": "1.56",
+     "yes_sub_title": "NYC Titans"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "PHL vs NYCTTN (Sep 26)",
+   "title": "The Philadelphians vs NYC Titans"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP261400SAROGREBB",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-24T00:12:21.578792Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T22:00:00Z",
+     "created_time": "2026-09-24T00:01:46.66615Z",
+     "custom_strike": {
+      "cricket_team": "f4ed2d5a-b157-4ef9-9479-6c393ed2da56"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261400SAROGREBB",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T22:00:00Z",
+     "expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.5600",
+     "latest_expiration_time": "2026-09-28T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7400",
+     "no_bid_dollars": "0.3900",
+     "no_sub_title": "East Bay Blazers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T22:00:00Z",
+     "open_interest_fp": "298.94",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2200",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If East Bay Blazers wins the East Bay Blazers vs San Ramon Grizzlies men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the East Bay Blazers vs San Ramon Grizzlies men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261400SAROGREBB-EBB",
+     "title": "East Bay Blazers wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "283.54",
+     "volume_fp": "319.62",
+     "yes_ask_dollars": "0.6100",
+     "yes_ask_size_fp": "3.00",
+     "yes_bid_dollars": "0.2600",
+     "yes_bid_size_fp": "1.00",
+     "yes_sub_title": "East Bay Blazers"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T22:00:00Z",
+     "created_time": "2026-09-24T00:01:46.66615Z",
+     "custom_strike": {
+      "cricket_team": "95eca0e5-372d-4381-9a60-aa75ae6f1d18"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261400SAROGREBB",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T22:00:00Z",
+     "expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.8100",
+     "latest_expiration_time": "2026-09-28T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.6300",
+     "no_bid_dollars": "0.2500",
+     "no_sub_title": "San Ramon Grizzlies",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T22:00:00Z",
+     "open_interest_fp": "256.56",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2300",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If San Ramon Grizzlies wins the East Bay Blazers vs San Ramon Grizzlies men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the East Bay Blazers vs San Ramon Grizzlies men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261400SAROGREBB-SAROGR",
+     "title": "San Ramon Grizzlies wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "256.56",
+     "volume_fp": "256.56",
+     "yes_ask_dollars": "0.7500",
+     "yes_ask_size_fp": "6.00",
+     "yes_bid_dollars": "0.3700",
+     "yes_bid_size_fp": "13.00",
+     "yes_sub_title": "San Ramon Grizzlies"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "EBB vs SAROGR (Sep 26)",
+   "title": "East Bay Blazers vs San Ramon Grizzlies"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP261500CHITIGCHKI",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-26T05:15:30.361351Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T23:00:00Z",
+     "created_time": "2026-09-24T00:01:51.496054Z",
+     "custom_strike": {
+      "cricket_team": "3015d166-842c-44b4-97c4-16c277882b54"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261500CHITIGCHKI",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T23:00:00Z",
+     "expiration_time": "2026-09-28T23:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.8200",
+     "latest_expiration_time": "2026-09-28T23:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.3400",
+     "no_bid_dollars": "0.2400",
+     "no_sub_title": "Chicago Kingsmen",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T23:00:00Z",
+     "open_interest_fp": "194.60",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Chicago Kingsmen wins the Chicago Kingsmen vs Chicago Tigers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 3:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Chicago Kingsmen vs Chicago Tigers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 3:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261500CHITIGCHKI-CHKI",
+     "title": "Chicago Kingsmen wins",
+     "updated_time": "2026-09-26T05:15:30.365882Z",
+     "volume_24h_fp": "194.60",
+     "volume_fp": "194.60",
+     "yes_ask_dollars": "0.7600",
+     "yes_ask_size_fp": "1.00",
+     "yes_bid_dollars": "0.6600",
+     "yes_bid_size_fp": "5.07",
+     "yes_sub_title": "Chicago Kingsmen"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-28T23:00:00Z",
+     "created_time": "2026-09-24T00:01:51.496054Z",
+     "custom_strike": {
+      "cricket_team": "d5a71a06-0a18-462c-903e-c445d2d9567a"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261500CHITIGCHKI",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-26T23:00:00Z",
+     "expiration_time": "2026-09-28T23:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.2800",
+     "latest_expiration_time": "2026-09-28T23:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7400",
+     "no_bid_dollars": "0.6800",
+     "no_sub_title": "Chicago Tigers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-26T23:00:00Z",
+     "open_interest_fp": "4.00",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2300",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Chicago Tigers wins the Chicago Kingsmen vs Chicago Tigers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 3:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Chicago Kingsmen vs Chicago Tigers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 3:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261500CHITIGCHKI-CHITIG",
+     "title": "Chicago Tigers wins",
+     "updated_time": "2026-09-26T05:15:30.365882Z",
+     "volume_24h_fp": "4.00",
+     "volume_fp": "4.00",
+     "yes_ask_dollars": "0.3200",
+     "yes_ask_size_fp": "1.00",
+     "yes_bid_dollars": "0.2600",
+     "yes_bid_size_fp": "1.00",
+     "yes_sub_title": "Chicago Tigers"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "CHKI vs CHITIG (Sep 26)",
+   "title": "Chicago Kingsmen vs Chicago Tigers"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP261600METTRALOSTAT",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-24T00:12:21.597899Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T00:00:00Z",
+     "created_time": "2026-09-24T00:01:47.077957Z",
+     "custom_strike": {
+      "cricket_team": "96dffdd3-cb7c-4cd5-a768-9928fa7b1c7a"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261600METTRALOSTAT",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T00:00:00Z",
+     "expiration_time": "2026-09-29T00:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.7200",
+     "latest_expiration_time": "2026-09-29T00:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.5000",
+     "no_bid_dollars": "0.4600",
+     "no_sub_title": "Lone Star Athletics",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T00:00:00Z",
+     "open_interest_fp": "37.46",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Lone Star Athletics wins the Lone Star Athletics vs MetroPlex Tracers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 4:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Lone Star Athletics vs MetroPlex Tracers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 4:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261600METTRALOSTAT-LOSTAT",
+     "title": "Lone Star Athletics wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "37.46",
+     "volume_fp": "37.46",
+     "yes_ask_dollars": "0.5400",
+     "yes_ask_size_fp": "0.24",
+     "yes_bid_dollars": "0.5000",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Lone Star Athletics"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T00:00:00Z",
+     "created_time": "2026-09-24T00:01:47.077957Z",
+     "custom_strike": {
+      "cricket_team": "be047175-f0f9-42c0-8d5c-ddffd029dfef"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261600METTRALOSTAT",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T00:00:00Z",
+     "expiration_time": "2026-09-29T00:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.5300",
+     "latest_expiration_time": "2026-09-29T00:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.5400",
+     "no_bid_dollars": "0.4900",
+     "no_sub_title": "MetroPlex Tracers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T00:00:00Z",
+     "open_interest_fp": "8.54",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2200",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If MetroPlex Tracers wins the Lone Star Athletics vs MetroPlex Tracers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 4:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Lone Star Athletics vs MetroPlex Tracers men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 4:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261600METTRALOSTAT-METTRA",
+     "title": "MetroPlex Tracers wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "8.56",
+     "volume_fp": "8.56",
+     "yes_ask_dollars": "0.5100",
+     "yes_ask_size_fp": "0.26",
+     "yes_bid_dollars": "0.4600",
+     "yes_bid_size_fp": "2.24",
+     "yes_sub_title": "MetroPlex Tracers"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "LOSTAT vs METTRA (Sep 26)",
+   "title": "Lone Star Athletics vs MetroPlex Tracers"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP261700SETHBLOANLA",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-24T00:12:21.606851Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T01:00:00Z",
+     "created_time": "2026-09-24T00:01:46.265153Z",
+     "custom_strike": {
+      "cricket_team": "0477319e-1745-4ab4-a120-62c199ef6d77"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261700SETHBLOANLA",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T01:00:00Z",
+     "expiration_time": "2026-09-29T01:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.6100",
+     "latest_expiration_time": "2026-09-29T01:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.4500",
+     "no_bid_dollars": "0.4400",
+     "no_sub_title": "Los Angeles Lashings",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T01:00:00Z",
+     "open_interest_fp": "8.31",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2400",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Los Angeles Lashings wins the Los Angeles Lashings vs Seattle Thunderbolts men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 5:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Los Angeles Lashings vs Seattle Thunderbolts men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 5:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261700SETHBLOANLA-LOANLA",
+     "title": "Los Angeles Lashings wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "8.31",
+     "volume_fp": "8.31",
+     "yes_ask_dollars": "0.5600",
+     "yes_ask_size_fp": "0.26",
+     "yes_bid_dollars": "0.5500",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Los Angeles Lashings"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T01:00:00Z",
+     "created_time": "2026-09-24T00:01:46.265153Z",
+     "custom_strike": {
+      "cricket_team": "c06d7a4a-9768-4bc3-acf2-23cd1d8659bd"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP261700SETHBLOANLA",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T01:00:00Z",
+     "expiration_time": "2026-09-29T01:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.7200",
+     "latest_expiration_time": "2026-09-29T01:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.5600",
+     "no_bid_dollars": "0.4800",
+     "no_sub_title": "Seattle Thunderbolts",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T01:00:00Z",
+     "open_interest_fp": "38.23",
+     "open_time": "2026-09-24T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7200",
+     "previous_yes_bid_dollars": "0.2300",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Seattle Thunderbolts wins the Los Angeles Lashings vs Seattle Thunderbolts men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 5:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Los Angeles Lashings vs Seattle Thunderbolts men's professional Minor League Cricket cricket match originally scheduled for Sep 26, 2026 at 5:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP261700SETHBLOANLA-SETHB",
+     "title": "Seattle Thunderbolts wins",
+     "updated_time": "2026-09-24T00:11:00.90922Z",
+     "volume_24h_fp": "38.23",
+     "volume_fp": "38.23",
+     "yes_ask_dollars": "0.5200",
+     "yes_ask_size_fp": "2.00",
+     "yes_bid_dollars": "0.4400",
+     "yes_bid_size_fp": "2.26",
+     "yes_sub_title": "Seattle Thunderbolts"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "LOANLA vs SETHB (Sep 26)",
+   "title": "Los Angeles Lashings vs Seattle Thunderbolts"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP271000MYNYCTTN",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-25T00:11:35.713869Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T18:00:00Z",
+     "created_time": "2026-09-25T00:01:01.620246Z",
+     "custom_strike": {
+      "cricket_team": "7c7cf97d-aee2-43e1-b989-e5a36790125a"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271000MYNYCTTN",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T18:00:00Z",
+     "expiration_time": "2026-09-29T18:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T18:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7600",
+     "no_bid_dollars": "0.2800",
+     "no_sub_title": "NYC Titans",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T18:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.0800",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If NYC Titans wins the NYC Titans vs Manhattan Yorkers men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 10:00 AM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the NYC Titans vs Manhattan Yorkers men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 10:00 AM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271000MYNYCTTN-NYCTTN",
+     "title": "NYC Titans wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7200",
+     "yes_ask_size_fp": "3.78",
+     "yes_bid_dollars": "0.2400",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "NYC Titans"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T18:00:00Z",
+     "created_time": "2026-09-25T00:01:01.620246Z",
+     "custom_strike": {
+      "cricket_team": "0b204279-f7bb-4616-abb5-e915348ac7f6"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271000MYNYCTTN",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T18:00:00Z",
+     "expiration_time": "2026-09-29T18:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T18:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7600",
+     "no_bid_dollars": "0.2800",
+     "no_sub_title": "Manhattan Yorkers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T18:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Manhattan Yorkers wins the NYC Titans vs Manhattan Yorkers men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 10:00 AM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the NYC Titans vs Manhattan Yorkers men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 10:00 AM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271000MYNYCTTN-MY",
+     "title": "Manhattan Yorkers wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7200",
+     "yes_ask_size_fp": "3.78",
+     "yes_bid_dollars": "0.2400",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Manhattan Yorkers"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "NYCTTN vs MY (Sep 27)",
+   "title": "NYC Titans vs Manhattan Yorkers"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP271100CHITIGMICHCS",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-26T14:05:30.580084Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T19:00:00Z",
+     "created_time": "2026-09-25T00:00:58.867658Z",
+     "custom_strike": {
+      "cricket_team": "1d544244-8748-4ba7-b545-c44302370f68"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271100CHITIGMICHCS",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T19:00:00Z",
+     "expiration_time": "2026-09-29T19:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T19:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "Michigan Cricket Stars",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T19:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.0400",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Michigan Cricket Stars wins the Michigan Cricket Stars vs Chicago Tigers men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 11:00 AM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Michigan Cricket Stars vs Chicago Tigers men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 11:00 AM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271100CHITIGMICHCS-MICHCS",
+     "title": "Michigan Cricket Stars wins",
+     "updated_time": "2026-09-26T14:05:30.591523Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Michigan Cricket Stars"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T19:00:00Z",
+     "created_time": "2026-09-25T00:00:58.867658Z",
+     "custom_strike": {
+      "cricket_team": "d5a71a06-0a18-462c-903e-c445d2d9567a"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271100CHITIGMICHCS",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T19:00:00Z",
+     "expiration_time": "2026-09-29T19:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T19:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "Chicago Tigers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T19:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Chicago Tigers wins the Michigan Cricket Stars vs Chicago Tigers men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 11:00 AM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Michigan Cricket Stars vs Chicago Tigers men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 11:00 AM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271100CHITIGMICHCS-CHITIG",
+     "title": "Chicago Tigers wins",
+     "updated_time": "2026-09-26T14:05:30.591523Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Chicago Tigers"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "MICHCS vs CHITIG (Sep 27)",
+   "title": "Michigan Cricket Stars vs Chicago Tigers"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP271200NENGEAGNJST",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-25T00:11:35.773653Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T20:00:00Z",
+     "created_time": "2026-09-25T00:01:13.920052Z",
+     "custom_strike": {
+      "cricket_team": "784bcee5-58fe-4556-a8f6-a52803ccdc0f"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271200NENGEAGNJST",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T20:00:00Z",
+     "expiration_time": "2026-09-29T20:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T20:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "New Jersey Stallions",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T20:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.0700",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If New Jersey Stallions wins the New Jersey Stallions vs New England Eagles men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 12:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the New Jersey Stallions vs New England Eagles men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 12:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271200NENGEAGNJST-NJST",
+     "title": "New Jersey Stallions wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "New Jersey Stallions"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T20:00:00Z",
+     "created_time": "2026-09-25T00:01:13.920052Z",
+     "custom_strike": {
+      "cricket_team": "f661b769-052c-4fef-af71-5391fe073e72"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271200NENGEAGNJST",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T20:00:00Z",
+     "expiration_time": "2026-09-29T20:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T20:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "New England Eagles",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T20:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1300",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If New England Eagles wins the New Jersey Stallions vs New England Eagles men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 12:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the New Jersey Stallions vs New England Eagles men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 12:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271200NENGEAGNJST-NENGEAG",
+     "title": "New England Eagles wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "New England Eagles"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "NJST vs NENGEAG (Sep 27)",
+   "title": "New Jersey Stallions vs New England Eagles"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP271400PHLNJSMCAV",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-25T00:11:35.798465Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T22:00:00Z",
+     "created_time": "2026-09-25T00:00:54.233597Z",
+     "custom_strike": {
+      "cricket_team": "3375da3e-67b2-4f6e-b83c-b1e8236af060"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271400PHLNJSMCAV",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T22:00:00Z",
+     "expiration_time": "2026-09-29T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "New Jersey Somerset Cavaliers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T22:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If New Jersey Somerset Cavaliers wins the New Jersey Somerset Cavaliers vs The Philadelphians men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the New Jersey Somerset Cavaliers vs The Philadelphians men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271400PHLNJSMCAV-NJSMCAV",
+     "title": "New Jersey Somerset Cavaliers wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "New Jersey Somerset Cavaliers"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T22:00:00Z",
+     "created_time": "2026-09-25T00:00:54.233597Z",
+     "custom_strike": {
+      "cricket_team": "01e1bbe2-68f3-4c95-aca2-a40ffdcb3767"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271400PHLNJSMCAV",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T22:00:00Z",
+     "expiration_time": "2026-09-29T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7900",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "The Philadelphians",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T22:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.0700",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If The Philadelphians wins the New Jersey Somerset Cavaliers vs The Philadelphians men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the New Jersey Somerset Cavaliers vs The Philadelphians men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271400PHLNJSMCAV-PHL",
+     "title": "The Philadelphians wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2100",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "The Philadelphians"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "NJSMCAV vs PHL (Sep 27)",
+   "title": "New Jersey Somerset Cavaliers vs The Philadelphians"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP271500LOSTATMETTRA",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-25T00:11:35.810308Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T23:00:00Z",
+     "created_time": "2026-09-25T00:00:56.410776Z",
+     "custom_strike": {
+      "cricket_team": "be047175-f0f9-42c0-8d5c-ddffd029dfef"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271500LOSTATMETTRA",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T23:00:00Z",
+     "expiration_time": "2026-09-29T23:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T23:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "MetroPlex Tracers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T23:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1000",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If MetroPlex Tracers wins the MetroPlex Tracers vs Lone Star Athletics men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the MetroPlex Tracers vs Lone Star Athletics men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271500LOSTATMETTRA-METTRA",
+     "title": "MetroPlex Tracers wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "MetroPlex Tracers"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T23:00:00Z",
+     "created_time": "2026-09-25T00:00:56.410776Z",
+     "custom_strike": {
+      "cricket_team": "96dffdd3-cb7c-4cd5-a768-9928fa7b1c7a"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271500LOSTATMETTRA",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T23:00:00Z",
+     "expiration_time": "2026-09-29T23:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T23:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "Lone Star Athletics",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T23:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Lone Star Athletics wins the MetroPlex Tracers vs Lone Star Athletics men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the MetroPlex Tracers vs Lone Star Athletics men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271500LOSTATMETTRA-LOSTAT",
+     "title": "Lone Star Athletics wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Lone Star Athletics"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "METTRA vs LOSTAT (Sep 27)",
+   "title": "MetroPlex Tracers vs Lone Star Athletics"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP271500SAROGRSVST",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-25T00:11:35.821513Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T23:00:00Z",
+     "created_time": "2026-09-25T00:01:15.897294Z",
+     "custom_strike": {
+      "cricket_team": "12f6148a-9893-4895-af17-e7732d94eefb"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271500SAROGRSVST",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T23:00:00Z",
+     "expiration_time": "2026-09-29T23:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T23:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "Silicon Valley Strikers",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T23:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.0700",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Silicon Valley Strikers wins the Silicon Valley Strikers vs San Ramon Grizzlies men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Silicon Valley Strikers vs San Ramon Grizzlies men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271500SAROGRSVST-SVST",
+     "title": "Silicon Valley Strikers wins",
+     "updated_time": "2026-09-25T00:10:01.556224Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Silicon Valley Strikers"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T23:00:00Z",
+     "created_time": "2026-09-25T00:01:15.897294Z",
+     "custom_strike": {
+      "cricket_team": "95eca0e5-372d-4381-9a60-aa75ae6f1d18"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271500SAROGRSVST",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T23:00:00Z",
+     "expiration_time": "2026-09-29T23:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T23:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "San Ramon Grizzlies",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T23:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If San Ramon Grizzlies wins the Silicon Valley Strikers vs San Ramon Grizzlies men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Silicon Valley Strikers vs San Ramon Grizzlies men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271500SAROGRSVST-SAROGR",
+     "title": "San Ramon Grizzlies wins",
+     "updated_time": "2026-09-25T00:10:01.333269Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "San Ramon Grizzlies"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "SVST vs SAROGR (Sep 27)",
+   "title": "Silicon Valley Strikers vs San Ramon Grizzlies"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP271500STLOAMCHKI",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-26T14:05:30.994475Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T23:00:00Z",
+     "created_time": "2026-09-25T00:01:19.337424Z",
+     "custom_strike": {
+      "cricket_team": "3015d166-842c-44b4-97c4-16c277882b54"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271500STLOAMCHKI",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T23:00:00Z",
+     "expiration_time": "2026-09-29T23:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-29T23:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.5700",
+     "no_bid_dollars": "0.3700",
+     "no_sub_title": "Chicago Kingsmen",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T23:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Chicago Kingsmen wins the Chicago Kingsmen vs St Louis Americans men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Chicago Kingsmen vs St Louis Americans men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271500STLOAMCHKI-CHKI",
+     "title": "Chicago Kingsmen wins",
+     "updated_time": "2026-09-26T14:05:31.002027Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.6300",
+     "yes_ask_size_fp": "3.35",
+     "yes_bid_dollars": "0.4300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Chicago Kingsmen"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-29T23:00:00Z",
+     "created_time": "2026-09-25T00:01:19.337424Z",
+     "custom_strike": {
+      "cricket_team": "12d8ff56-e595-4bd7-ba8c-6ac08724cd83"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271500STLOAMCHKI",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-27T23:00:00Z",
+     "expiration_time": "2026-09-29T23:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.7500",
+     "latest_expiration_time": "2026-09-29T23:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.6400",
+     "no_bid_dollars": "0.4800",
+     "no_sub_title": "St Louis Americans",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-27T23:00:00Z",
+     "open_interest_fp": "2.62",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.0700",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If St Louis Americans wins the Chicago Kingsmen vs St Louis Americans men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Chicago Kingsmen vs St Louis Americans men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 3:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271500STLOAMCHKI-STLOAM",
+     "title": "St Louis Americans wins",
+     "updated_time": "2026-09-26T14:05:31.002027Z",
+     "volume_24h_fp": "2.62",
+     "volume_fp": "2.62",
+     "yes_ask_dollars": "0.5200",
+     "yes_ask_size_fp": "2.00",
+     "yes_bid_dollars": "0.3600",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "St Louis Americans"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "CHKI vs STLOAM (Sep 27)",
+   "title": "Chicago Kingsmen vs St Louis Americans"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP271600SETHBLOANLA",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-25T00:11:35.843176Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-30T00:00:00Z",
+     "created_time": "2026-09-25T00:01:04.397907Z",
+     "custom_strike": {
+      "cricket_team": "0477319e-1745-4ab4-a120-62c199ef6d77"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271600SETHBLOANLA",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-28T00:00:00Z",
+     "expiration_time": "2026-09-30T00:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-30T00:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "Los Angeles Lashings",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-28T00:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.1100",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Los Angeles Lashings wins the Los Angeles Lashings vs Seattle Thunderbolts men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 4:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Los Angeles Lashings vs Seattle Thunderbolts men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 4:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271600SETHBLOANLA-LOANLA",
+     "title": "Los Angeles Lashings wins",
+     "updated_time": "2026-09-25T00:10:01.556224Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Los Angeles Lashings"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-30T00:00:00Z",
+     "created_time": "2026-09-25T00:01:04.397907Z",
+     "custom_strike": {
+      "cricket_team": "c06d7a4a-9768-4bc3-acf2-23cd1d8659bd"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP271600SETHBLOANLA",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-28T00:00:00Z",
+     "expiration_time": "2026-09-30T00:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-30T00:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.7700",
+     "no_bid_dollars": "0.2700",
+     "no_sub_title": "Seattle Thunderbolts",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-28T00:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-25T00:10:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.7500",
+     "previous_yes_bid_dollars": "0.0700",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Seattle Thunderbolts wins the Los Angeles Lashings vs Seattle Thunderbolts men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 4:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Los Angeles Lashings vs Seattle Thunderbolts men's professional Minor League Cricket cricket match originally scheduled for Sep 27, 2026 at 4:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP271600SETHBLOANLA-SETHB",
+     "title": "Seattle Thunderbolts wins",
+     "updated_time": "2026-09-25T00:10:01.556224Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7300",
+     "yes_ask_size_fp": "3.85",
+     "yes_bid_dollars": "0.2300",
+     "yes_bid_size_fp": "2.00",
+     "yes_sub_title": "Seattle Thunderbolts"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "LOANLA vs SETHB (Sep 27)",
+   "title": "Los Angeles Lashings vs Seattle Thunderbolts"
+  },
+  {
+   "category": "Sports",
+   "collateral_return_type": "MECNET",
+   "event_ticker": "KXT20MATCH-26SEP281400SDSRLOANLA",
+   "exchange_index": 0,
+   "last_updated_ts": "2026-09-26T00:14:12.671318Z",
+   "markets": [
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-30T22:00:00Z",
+     "created_time": "2026-09-26T00:01:31.42099Z",
+     "custom_strike": {
+      "cricket_team": "0477319e-1745-4ab4-a120-62c199ef6d77"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP281400SDSRLOANLA",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_time": "2026-09-30T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-30T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.8200",
+     "no_bid_dollars": "0.2600",
+     "no_sub_title": "Los Angeles Lashings",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-28T22:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-26T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.0000",
+     "previous_yes_bid_dollars": "0.0000",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If Los Angeles Lashings wins the Los Angeles Lashings vs San Diego Surf Riders men's professional Minor League Cricket cricket match originally scheduled for Sep 28, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Los Angeles Lashings vs San Diego Surf Riders men's professional Minor League Cricket cricket match originally scheduled for Sep 28, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP281400SDSRLOANLA-LOANLA",
+     "title": "Los Angeles Lashings wins",
+     "updated_time": "2026-09-26T00:11:00.063388Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7400",
+     "yes_ask_size_fp": "1.92",
+     "yes_bid_dollars": "0.1800",
+     "yes_bid_size_fp": "30.00",
+     "yes_sub_title": "Los Angeles Lashings"
+    },
+    {
+     "can_close_early": true,
+     "close_time": "2026-09-30T22:00:00Z",
+     "created_time": "2026-09-26T00:01:31.42099Z",
+     "custom_strike": {
+      "cricket_team": "e82d9e87-4ff5-400c-95b7-00dfe72a79e3"
+     },
+     "early_close_condition": "This market will close and expire after a winner is declared.",
+     "event_ticker": "KXT20MATCH-26SEP281400SDSRLOANLA",
+     "exchange_index": 0,
+     "expected_expiration_time": "2026-09-28T22:00:00Z",
+     "expiration_time": "2026-09-30T22:00:00Z",
+     "expiration_value": "",
+     "last_price_dollars": "0.0000",
+     "latest_expiration_time": "2026-09-30T22:00:00Z",
+     "liquidity_dollars": "0.0000",
+     "market_type": "binary",
+     "no_ask_dollars": "0.9600",
+     "no_bid_dollars": "0.2500",
+     "no_sub_title": "San Diego Surf Riders",
+     "notional_value_dollars": "1.0000",
+     "occurrence_datetime": "2026-09-28T22:00:00Z",
+     "open_interest_fp": "0.00",
+     "open_time": "2026-09-26T00:11:00Z",
+     "previous_price_dollars": "0.0000",
+     "previous_yes_ask_dollars": "0.0000",
+     "previous_yes_bid_dollars": "0.0000",
+     "price_level_structure": "linear_cent",
+     "price_ranges": [
+      {
+       "end": "1.0000",
+       "start": "0.0000",
+       "step": "0.0100"
+      }
+     ],
+     "result": "",
+     "rules_primary": "If San Diego Surf Riders wins the Los Angeles Lashings vs San Diego Surf Riders men's professional Minor League Cricket cricket match originally scheduled for Sep 28, 2026 at 2:00 PM EDT, then the market resolves to Yes.",
+     "rules_secondary": "If the Los Angeles Lashings vs San Diego Surf Riders men's professional Minor League Cricket cricket match originally scheduled for Sep 28, 2026 at 2:00 PM EDT ends in a tie, draw, no result (NR), abandonment, or cancellation, and no official winner is declared, all markets will resolve to $0.50.\nIn the event of a forfeit, disqualification, or concession:\n  If it occurs before the match begins, all markets will resolve to $0.50.\n  If it occurs after the match has begun, and the governing body declares an official winner, the market will resolve based on that result.\nIf play begins but insufficient play occurs to determine an official result, all markets will resolve to $0.50.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+     "settlement_timer_seconds": 240,
+     "status": "active",
+     "strike_type": "structured",
+     "ticker": "KXT20MATCH-26SEP281400SDSRLOANLA-SDSR",
+     "title": "San Diego Surf Riders wins",
+     "updated_time": "2026-09-26T00:11:00.063388Z",
+     "volume_24h_fp": "0.00",
+     "volume_fp": "0.00",
+     "yes_ask_dollars": "0.7500",
+     "yes_ask_size_fp": "52.00",
+     "yes_bid_dollars": "0.0400",
+     "yes_bid_size_fp": "497.00",
+     "yes_sub_title": "San Diego Surf Riders"
+    }
+   ],
+   "mutually_exclusive": true,
+   "product_metadata": {
+    "competition": "T20 (M)",
+    "competition_scope": "Game"
+   },
+   "series_ticker": "KXT20MATCH",
+   "settlement_sources": [
+    {
+     "name": "Cricbuzz",
+     "url": "https://www.cricbuzz.com/"
+    },
+    {
+     "name": "ESPN cricinfo",
+     "url": "https://www.espncricinfo.com/"
+    },
+    {
+     "name": "ICC",
+     "url": "https://www.icc-cricket.com/fixtures-results"
+    },
+    {
+     "name": "ESPN",
+     "url": "https://www.espn.com"
+    }
+   ],
+   "strike_period": "",
+   "sub_title": "LOANLA vs SDSR (Sep 28)",
+   "title": "Los Angeles Lashings vs San Diego Surf Riders"
+  }
+ ]
+}
