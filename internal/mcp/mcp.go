@@ -28,11 +28,13 @@ const (
 // and the flag would be silently ignored.
 //
 // It is what initialize advertises, and clients cache a server's tool list
-// against it, so it moves whenever the tools do. 0.2.0 adds Minor League
+// against it, so it moves whenever the tools do. 0.2.0 added Minor League
 // Cricket: cricket_minor_league, and its games at the end of
-// cricket_live_matches. A client still holding 0.1.0's list would never
-// offer the new tool.
-var ServerVersion = "0.2.0"
+// cricket_live_matches. 0.3.0 adds cricket_minor_league_info, the league's
+// history, teams, grounds and players, to match the hosted server's 17
+// tools; here it points at the hosted server, which holds that data. A
+// client still holding 0.2.0's list would never offer it.
+var ServerVersion = "0.3.0"
 
 // ---------------------------------------------------------------- protocol
 
@@ -333,6 +335,7 @@ func buildTools() []Tool {
 			}),
 			handler: minorLeagueTool,
 		},
+		minorLeagueInfoToolDef(),
 		{
 			Name:        "cricket_explain_term",
 			Description: "Explain a cricket term in plain English with its closest baseball equivalent (wicket, yorker, googly, powerplay, DLS, and ~60 more).",

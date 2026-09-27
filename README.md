@@ -95,6 +95,7 @@ Most sports MCP servers wrap a scores API. This one ships analysis:
 | `cricket_live_matches` | Matches live and upcoming right now |
 | `cricket_explain_term` | Any cricket term, with its baseball equivalent |
 | `cricket_minor_league` | Minor League Cricket (US domestic T20): live scores, situation and win chances from Kalshi's live data |
+| `cricket_minor_league_info` | Minor League history, teams, grounds and player records. Hosted-only data: the local build points you to the hosted server |
 
 All tools are read-only.
 
