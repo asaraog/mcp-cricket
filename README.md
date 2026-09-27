@@ -42,6 +42,7 @@ same tools, one static binary.
 ## 💬 Things to ask it
 
 - *"Who's winning the India match right now, and what does the model say?"*
+- *"What's the score in the Minor League Cricket game, and who's favoured?"*
 - *"Who is favoured at 149 for 7 chasing 178 with three overs left?"*
 - *"How does Kohli bat against Bumrah in T20s?"*
 - *"What does the market think versus your model for Welsh Fire vs Southern Brave?"*
@@ -93,6 +94,7 @@ Most sports MCP servers wrap a scores API. This one ships analysis:
 | `cricket_market_odds` | Live prediction-market prices (Kalshi) beside this model's number |
 | `cricket_live_matches` | Matches live and upcoming right now |
 | `cricket_explain_term` | Any cricket term, with its baseball equivalent |
+| `cricket_minor_league` | Minor League Cricket (US domestic T20): live scores, situation and win chances from Kalshi's live data — hosted server; coming to the local build |
 
 All tools are read-only.
 
