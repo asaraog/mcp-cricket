@@ -102,10 +102,13 @@ All tools are read-only.
 **Minor League Cricket data.** ESPN does not carry the league, so its
 fixtures and scores come from Kalshi's public live data: the schedule, each
 game's score and state, and Kalshi's market beside it. That feed has no
-ball-by-ball commentary and names no batters or bowlers, so neither tool
-can say who is batting, who took a wicket or what happened on a given ball.
-A market figure appears only when Kalshi's book is a real price, and the
-model prices only the chase.
+ball-by-ball commentary and names no batters or bowlers, so
+`cricket_minor_league` cannot say who is batting, who took a wicket or what
+happened on a given ball. A market figure appears only when Kalshi's book is
+a real price, and the model prices only the chase. The hosted server's
+`cricket_minor_league_info` does name players: it draws on CricClubs
+scorecards and results, and on Wikipedia's season articles (CC BY-SA 4.0),
+which is why that data stays on the hosted server.
 
 ## 🚀 Quick start
 

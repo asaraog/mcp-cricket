@@ -346,7 +346,7 @@ func buildTools() []Tool {
 			Name: "cricket_minor_league",
 			Description: "Scores and win chances for Minor League Cricket (the US domestic T20 league) from Kalshi's public live data: every game live, starting within 3 hours or finished in the last 2 hours, or one team's game. " +
 				"Each game gives its state, start time (ET), score, what the chasing side needs or the result, and win chances: the Kalshi market's midpoint only when its book is a real price, and this server's model only during the chase. " +
-				"Kalshi's feed has no ball-by-ball commentary and no batters or bowlers. If nothing is on, it says when the next game is.",
+				"Kalshi's feed has no ball-by-ball commentary and no batters or bowlers. If nothing is on, it says when the next game is. The league's history, teams, grounds and players are cricket_minor_league_info's.",
 			InputSchema: obj(map[string]any{
 				"team": str("optional: a full or partial Minor League Cricket team name, e.g. 'Atlanta Fire' or 'Kingsmen'. Omit for every game on now"),
 			}),
