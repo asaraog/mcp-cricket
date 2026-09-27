@@ -28,11 +28,11 @@ const (
 // and the flag would be silently ignored.
 //
 // It is what initialize advertises, and clients cache a server's tool list
-// against it, so it moves whenever the tools do. 0.3.0 matches the hosted
-// server: Minor League Cricket (cricket_minor_league, its games at the end
-// of cricket_live_matches, and cricket_minor_league_info). A client still
-// holding an older list would never offer the new tools.
-var ServerVersion = "0.3.0"
+// against it, so it moves whenever the tools do. 0.2.0 adds Minor League
+// Cricket: cricket_minor_league, and its games at the end of
+// cricket_live_matches. A client still holding 0.1.0's list would never
+// offer the new tool.
+var ServerVersion = "0.2.0"
 
 // ---------------------------------------------------------------- protocol
 
@@ -332,20 +332,6 @@ func buildTools() []Tool {
 				"team": str("optional: a full or partial Minor League Cricket team name, e.g. 'Atlanta Fire' or 'Kingsmen'. Omit for every game on now"),
 			}),
 			handler: minorLeagueTool,
-		},
-		{
-			Name: "cricket_minor_league_info",
-			Description: "Minor League Cricket history, teams, grounds and player records. That data is served only by the hosted server at " + hostedURL + "; " +
-				"this local build answers with a pointer to it. For live Minor League scores and win chances, use cricket_minor_league.",
-			InputSchema: obj(map[string]any{
-				"player":  str("optional: a Minor League Cricket player's name"),
-				"team":    str("optional: a Minor League Cricket team name, e.g. 'Seattle Thunderbolts'"),
-				"season":  inte("optional: a season year, e.g. 2025"),
-				"ground":  str("optional: a ground name"),
-				"leaders": str("optional: 'runs' or 'wickets' for a leaderboard"),
-				"topic":   str("optional: anything else about the league, in plain words"),
-			}),
-			handler: minorLeagueInfoTool,
 		},
 		{
 			Name:        "cricket_explain_term",
