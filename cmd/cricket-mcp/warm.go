@@ -20,8 +20,8 @@ import (
 //
 // A client launches this server when it starts, well before the first tool
 // call, so a fill started at launch is done before anything asks. It is in
-// init, in its own file, so the protocol loop in main.go stays exactly as
-// it was; MILC_LIVE=off still turns the Minor League fill into a no-op.
+// init, in its own file, so main.go stays the protocol loop and nothing
+// else; MILC_LIVE=off still turns the Minor League fill into a no-op.
 func init() {
 	go kalshi.WarmScan()
 	go milclive.Warm(5 * time.Second)

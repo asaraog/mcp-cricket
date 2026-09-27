@@ -5,6 +5,7 @@ package mcp
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -79,6 +80,22 @@ func obj(props map[string]any, required ...string) map[string]any {
 func str(desc string) map[string]any  { return map[string]any{"type": "string", "description": desc} }
 func num(desc string) map[string]any  { return map[string]any{"type": "number", "description": desc} }
 func inte(desc string) map[string]any { return map[string]any{"type": "integer", "description": desc} }
+
+// Unreadable answers a message that did not decode as a request, per
+// JSON-RPC 2.0: a parse error for bytes that are not JSON, an invalid
+// request for JSON of the wrong shape (a method that is a number, an
+// array), under the message's id when one was read and null otherwise.
+func Unreadable(id json.RawMessage, err error) Response {
+	res := Response{JSONRPC: "2.0", ID: id, Error: &rpcErr{Code: -32700, Message: "parse error"}}
+	var typeErr *json.UnmarshalTypeError
+	if errors.As(err, &typeErr) {
+		res.Error = &rpcErr{Code: -32600, Message: "invalid request"}
+	}
+	if len(res.ID) == 0 {
+		res.ID = json.RawMessage("null")
+	}
+	return res
+}
 
 func Handle(req Request, tools []Tool, byName map[string]Tool) (Response, bool) {
 	res := Response{JSONRPC: "2.0", ID: req.ID}
