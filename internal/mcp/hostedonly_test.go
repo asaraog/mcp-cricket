@@ -8,8 +8,9 @@ import (
 	"testing"
 )
 
-// hostedToolNames is the hosted server's tools/list at 0.3.0, in its order,
-// as https://cricketfornoobs.com/mcp served it on 2026-09-27.
+// hostedToolNames is the hosted server's tools/list, in its order, as
+// https://cricketfornoobs.com/mcp served it on 2026-09-27 (0.3.0); 0.4.0
+// changes no tool.
 var hostedToolNames = []string{
 	"cricket_win_probability", "cricket_head_to_head", "cricket_player_career",
 	"cricket_match_archive", "cricket_phase_stats", "cricket_venue_stats",
@@ -33,13 +34,13 @@ func TestToolListMatchesTheHostedServer(t *testing.T) {
 		t.Errorf("tools/list:\n got %d %v\nwant %d %v", len(got), got, len(hostedToolNames), hostedToolNames)
 	}
 
-	if ServerVersion != "0.3.0" {
-		t.Errorf("ServerVersion = %q, want 0.3.0", ServerVersion)
+	if ServerVersion != "0.4.0" {
+		t.Errorf("ServerVersion = %q, want 0.4.0", ServerVersion)
 	}
 	hello := rpc(t, "initialize", `{"protocolVersion":"2025-06-18"}`)
 	hm, _ := hello.Result.(map[string]any)
-	if info, _ := hm["serverInfo"].(map[string]any); info["version"] != "0.3.0" {
-		t.Errorf("serverInfo = %v; a client keeps 0.2.0's tool list until the version moves", info)
+	if info, _ := hm["serverInfo"].(map[string]any); info["version"] != "0.4.0" {
+		t.Errorf("serverInfo = %v; a client keeps 0.3.0's tool list until the version moves", info)
 	}
 }
 
