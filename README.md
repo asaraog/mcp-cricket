@@ -151,35 +151,49 @@ Add the server to your client's config — for Claude Desktop:
 }
 ```
 
-Restart the client and the cricket tools appear. **That's the whole setup** —
-on first use the server downloads the prebuilt archive once (~200 MB) into
-your OS cache directory (`~/Library/Caches` on macOS, `~/.cache` on Linux,
-`%LocalAppData%` on Windows) and reuses it from then on. No account, no API key, no
-data pipeline to run.
+Restart the client and the cricket tools appear. Live scores, the win model,
+market prices and the glossary work as they are. The archive tools need the
+ball-by-ball database, which is not in the binary.
 
-<details>
-<summary>Building the archive yourself instead</summary>
+### 3. The archive
 
-The archive is generated from public [Cricsheet](https://cricsheet.org) data,
-so you can build your own rather than downloading ours:
+The database is built by the
+[asaraog/cricket-history-data](https://github.com/asaraog/cricket-history-data)
+workflow from public [Cricsheet](https://cricsheet.org) data and published
+there as a release asset, `history-full.db.gz` (206 MB). That release is
+private. With `HISTORY_DB_TOKEN` set to a GitHub token that can read it, the
+server resolves the latest release on first use, downloads the archive once
+into your OS cache directory (`~/Library/Caches` on macOS, `~/.cache` on
+Linux, `%LocalAppData%` on Windows) and reuses it from then on; when a later
+release replaces the asset, the next start downloads the new one. Without a
+token the download fails and the archive tools say the archive is missing.
+
+Building it yourself needs no token:
 
 ```bash
 curl -O https://cricsheet.org/downloads/all_json.zip
 python3 scripts/histgen.py all_json.zip history.db
 ```
 
-Then point `HISTORY_DB` at the result. Limited-overs-only archives work too —
+Then point `HISTORY_DB` at the result. A file you built is opened as it is
+and never replaced by a download. Limited-overs-only archives work too:
 tools degrade gracefully when a format is absent.
-</details>
+
+`scripts/histgen.py` is the same script the workflow runs. Since 2026-10-06
+its `deliveries` table carries `wide` and `noball` columns, so balls faced
+leave out wides and a bowler's balls leave out wides and no-balls, as a
+scorecard counts them. An archive built before that has neither column; the
+server reads it as before, counting every row as a ball.
 
 ## ⚙️ Configuration
 
 | Variable | Purpose |
 |----------|---------|
 | `HISTORY_DB` | Where the archive lives (default: your OS cache directory) |
-| `HISTORY_DB_URL` | Override the archive download URL |
-| `HISTORY_DB_TOKEN` | Bearer token, if that URL needs auth |
-| `HISTORY_QUERY_TIMEOUT` | Query deadline, default `3s`; raise for heavy leaderboards |
+| `HISTORY_DB_URL` | Download the archive from this URL instead of the latest release |
+| `HISTORY_DB_TOKEN` | GitHub token that can read the private release, or a bearer token for `HISTORY_DB_URL` |
+| `HISTORY_QUERY_TIMEOUT` | Deadline for match lookups and scorecards, default `3s` |
+| `HISTORY_ANALYTICS_TIMEOUT` | Deadline for phase splits, leaders, dismissals, discipline, situational and partnership queries, default `15s` |
 | `MILC_LIVE` | `off` turns off Minor League Cricket live data |
 
 Live-score tools work without any archive; archive tools report clearly when

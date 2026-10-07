@@ -22,6 +22,14 @@ type PhaseSplit struct {
 }
 
 // phases carve a limited-overs innings the way commentators do.
+//
+// The archive stores over as the over's number, 1 to 20: histgen.py
+// writes Cricsheet's 0-based over plus one, and "who bowled the 4th over"
+// reads d.over = 4 (OverDetail). The bounds here were 0-based, so the
+// powerplay split was overs 1 to 5 plus an over 0 no row has, the middle
+// split began an over early, and the 20th over, the one a death bowler
+// is asked about, was in no phase at all. The bounds are the over numbers
+// the names say.
 func phaseBounds(totalOvers int) []struct {
 	name     string
 	from, to int
@@ -30,12 +38,12 @@ func phaseBounds(totalOvers int) []struct {
 		return []struct {
 			name     string
 			from, to int
-		}{{"powerplay (1-10)", 0, 9}, {"middle (11-40)", 10, 39}, {"death (41-50)", 40, 49}}
+		}{{"powerplay (1-10)", 1, 10}, {"middle (11-40)", 11, 40}, {"death (41-50)", 41, 50}}
 	}
 	return []struct {
 		name     string
 		from, to int
-	}{{"powerplay (1-6)", 0, 5}, {"middle (7-15)", 6, 14}, {"death (16-20)", 15, 19}}
+	}{{"powerplay (1-6)", 1, 6}, {"middle (7-15)", 7, 15}, {"death (16-20)", 16, 20}}
 }
 
 // PhaseStats splits a player's batting and bowling by innings phase.
@@ -44,17 +52,17 @@ func PhaseStats(name string, totalOvers int) (batting, bowling []PhaseSplit, ok 
 		return nil, nil, false
 	}
 	var id int
-	if err := db.QueryRowContext(qctx(), `SELECT id FROM names WHERE LOWER(name)=LOWER(?)`, name).Scan(&id); err != nil {
+	if err := db.QueryRowContext(aqctx(), `SELECT id FROM names WHERE LOWER(name)=LOWER(?)`, name).Scan(&id); err != nil {
 		// fall back to a suffix match ("Kohli" -> "V Kohli")
-		if err := db.QueryRowContext(qctx(), `SELECT id FROM names WHERE LOWER(name) LIKE LOWER(?) ORDER BY LENGTH(name) LIMIT 1`, "%"+name).Scan(&id); err != nil {
+		if err := db.QueryRowContext(aqctx(), `SELECT id FROM names WHERE LOWER(name) LIKE LOWER(?) ORDER BY LENGTH(name) LIMIT 1`, "%"+name).Scan(&id); err != nil {
 			return nil, nil, false
 		}
 	}
 	for _, p := range phaseBounds(totalOvers) {
 		var b PhaseSplit
 		b.Phase = p.name
-		err := db.QueryRowContext(qctx(), `
-			SELECT COUNT(*), COALESCE(SUM(d.runs_batter),0),
+		err := db.QueryRowContext(aqctx(), `
+			SELECT `+ballsFaced("d.")+`, COALESCE(SUM(d.runs_batter),0),
 			       COALESCE(SUM(CASE WHEN d.player_out=? THEN 1 ELSE 0 END),0)
 			FROM deliveries d JOIN matches m ON m.id=d.match_id
 			WHERE d.batter=? AND m.overs=? AND d.over BETWEEN ? AND ?`,
@@ -64,8 +72,8 @@ func PhaseStats(name string, totalOvers int) (batting, bowling []PhaseSplit, ok 
 		}
 		var w PhaseSplit
 		w.Phase = p.name
-		err = db.QueryRowContext(qctx(), `
-			SELECT COUNT(*), COALESCE(SUM(d.runs_batter+d.runs_extras),0),
+		err = db.QueryRowContext(aqctx(), `
+			SELECT `+legalBalls("d.")+`, COALESCE(SUM(d.runs_batter+d.runs_extras),0),
 			       COALESCE(SUM(CASE WHEN d.wicket_kind NOT IN ('','run out') THEN 1 ELSE 0 END),0)
 			FROM deliveries d JOIN matches m ON m.id=d.match_id
 			WHERE d.bowler=? AND m.overs=? AND d.over BETWEEN ? AND ?`,
@@ -93,13 +101,13 @@ func VenueStats(venue string, totalOvers int) (VenueReport, bool) {
 		return VenueReport{}, false
 	}
 	var full string
-	if err := db.QueryRowContext(qctx(),
+	if err := db.QueryRowContext(aqctx(),
 		`SELECT venue FROM matches WHERE LOWER(venue) LIKE LOWER(?) AND overs=? GROUP BY venue ORDER BY COUNT(*) DESC LIMIT 1`,
 		"%"+venue+"%", totalOvers).Scan(&full); err != nil {
 		return VenueReport{}, false
 	}
 	r := VenueReport{Venue: full}
-	rows, err := db.QueryContext(qctx(), `
+	rows, err := db.QueryContext(aqctx(), `
 		SELECT m.id, COALESCE(w.name,''), t1.name, t2.name,
 		       (SELECT COALESCE(SUM(runs_batter+runs_extras),0) FROM deliveries d WHERE d.match_id=m.id AND d.innings=1)
 		FROM matches m
@@ -129,13 +137,13 @@ func VenueStats(venue string, totalOvers int) (VenueReport, bool) {
 		// The side batting second is whichever team did not bat first;
 		// innings 1 batting side is inferred from the delivery table.
 		var batFirst sql.NullString
-		_ = db.QueryRowContext(qctx(), `
+		_ = db.QueryRowContext(aqctx(), `
 			SELECT n.name FROM deliveries d
 			JOIN names n ON n.id=d.batter
 			WHERE d.match_id=? AND d.innings=1 LIMIT 1`, id).Scan(&batFirst)
 		_ = batFirst // batting-side name is a player; use winner vs first-innings runs instead
 		var secondRuns int
-		_ = db.QueryRowContext(qctx(),
+		_ = db.QueryRowContext(aqctx(),
 			`SELECT COALESCE(SUM(runs_batter+runs_extras),0) FROM deliveries WHERE match_id=? AND innings=2`, id).Scan(&secondRuns)
 		if secondRuns > first {
 			r.ChaseWins++
@@ -172,18 +180,18 @@ func Leaders(league, year, kind string, limit int) ([]Leader, bool) {
 	if kind == "bowling" {
 		q = `SELECT n.name,
 		            SUM(CASE WHEN d.wicket_kind NOT IN ('','run out') THEN 1 ELSE 0 END) w,
-		            COUNT(*) balls, SUM(d.runs_batter+d.runs_extras) conceded
+		            ` + legalBalls("d.") + ` balls, SUM(d.runs_batter+d.runs_extras) conceded
 		     FROM deliveries d JOIN matches m ON m.id=d.match_id
 		     JOIN names n ON n.id=d.bowler
 		     WHERE ` + where + ` GROUP BY n.name ORDER BY w DESC LIMIT ?`
 	} else {
-		q = `SELECT n.name, SUM(d.runs_batter) r, COUNT(*) balls
+		q = `SELECT n.name, SUM(d.runs_batter) r, ` + ballsFaced("d.") + ` balls
 		     FROM deliveries d JOIN matches m ON m.id=d.match_id
 		     JOIN names n ON n.id=d.batter
 		     WHERE ` + where + ` GROUP BY n.name ORDER BY r DESC LIMIT ?`
 	}
 	args = append(args, limit)
-	rows, err := db.QueryContext(qctx(), q, args...)
+	rows, err := db.QueryContext(aqctx(), q, args...)
 	if err != nil {
 		return nil, false
 	}
@@ -217,7 +225,7 @@ func TeamForm(team string, limit int) ([]FormLine, bool) {
 	if !Enabled() || limit <= 0 {
 		return nil, false
 	}
-	rows, err := db.QueryContext(qctx(), `
+	rows, err := db.QueryContext(aqctx(), `
 		SELECT m.date, t1.name, t2.name, COALESCE(w.name,''), COALESCE(m.event,'')
 		FROM matches m
 		JOIN names t1 ON t1.id=m.team1 JOIN names t2 ON t2.id=m.team2
@@ -300,11 +308,11 @@ func PhaseReport(name string, totalOvers int) (string, bool) {
 // all need it, so it lives here rather than four more times.
 func nameID(name string) (int, bool) {
 	var id int
-	if err := db.QueryRowContext(qctx(),
+	if err := db.QueryRowContext(aqctx(),
 		`SELECT id FROM names WHERE LOWER(name)=LOWER(?)`, name).Scan(&id); err == nil {
 		return id, true
 	}
-	if err := db.QueryRowContext(qctx(),
+	if err := db.QueryRowContext(aqctx(),
 		`SELECT id FROM names WHERE LOWER(name) LIKE LOWER(?) ORDER BY LENGTH(name) LIMIT 1`,
 		"%"+name).Scan(&id); err != nil {
 		return 0, false
@@ -346,7 +354,7 @@ func Dismissals(name, perspective string) ([]Dismissal, int, bool) {
 		     GROUP BY d.wicket_kind ORDER BY c DESC`
 		args = []any{id}
 	}
-	rows, err := db.QueryContext(qctx(), q, args...)
+	rows, err := db.QueryContext(aqctx(), q, args...)
 	if err != nil {
 		return nil, 0, false
 	}
@@ -384,9 +392,11 @@ func DisciplineStats(name, perspective string, totalOvers int) (Discipline, bool
 	if !ok {
 		return d, false
 	}
-	col := "d.bowler"
+	// A bowler's balls are his legal ones, the ones his economy is over;
+	// a batter's are the balls he faced, no-balls among them.
+	col, balls := "d.bowler", legalBalls("d.")
 	if perspective == "batting" {
-		col = "d.batter"
+		col, balls = "d.batter", ballsFaced("d.")
 	}
 	where := col + "=?"
 	args := []any{id}
@@ -394,8 +404,8 @@ func DisciplineStats(name, perspective string, totalOvers int) (Discipline, bool
 		where += " AND m.overs=?"
 		args = append(args, totalOvers)
 	}
-	err := db.QueryRowContext(qctx(), `
-		SELECT COUNT(*),
+	err := db.QueryRowContext(aqctx(), `
+		SELECT `+balls+`,
 		       SUM(CASE WHEN d.runs_batter+d.runs_extras=0 THEN 1 ELSE 0 END),
 		       SUM(CASE WHEN d.runs_batter=4 THEN 1 ELSE 0 END),
 		       SUM(CASE WHEN d.runs_batter=6 THEN 1 ELSE 0 END),
@@ -447,8 +457,8 @@ func SituationalStats(name string, totalOvers int) ([]Situation, bool) {
 			where += " AND m.overs=?"
 			args = append(args, totalOvers)
 		}
-		err := db.QueryRowContext(qctx(), `
-			SELECT COUNT(*), COALESCE(SUM(d.runs_batter),0),
+		err := db.QueryRowContext(aqctx(), `
+			SELECT `+ballsFaced("d.")+`, COALESCE(SUM(d.runs_batter),0),
 			       COALESCE(SUM(CASE WHEN d.player_out=? THEN 1 ELSE 0 END),0)
 			FROM deliveries d JOIN matches m ON m.id=d.match_id
 			WHERE `+where, append([]any{id}, args...)...).
@@ -497,13 +507,14 @@ func Partnerships(name string, limit int) ([]Partnership, bool) {
 	if !ok {
 		return nil, false
 	}
-	rows, err := db.QueryContext(qctx(), `
+	rows, err := db.QueryContext(aqctx(), `
 		WITH mine AS (
 		  SELECT DISTINCT match_id, innings FROM deliveries WHERE batter=?
 		),
 		seg AS (
 		  SELECT d.match_id, d.innings, d.batter,
 		         d.runs_batter + d.runs_extras AS runs,
+		         `+faced("d.")+` AS faced,
 		         SUM(CASE WHEN d.wicket_kind <> '' THEN 1 ELSE 0 END) OVER (
 		           PARTITION BY d.match_id, d.innings
 		           ORDER BY d.over, d.ball
@@ -513,7 +524,7 @@ func Partnerships(name string, limit int) ([]Partnership, bool) {
 		),
 		totals AS (
 		  SELECT match_id, innings, stand,
-		         SUM(runs) runs, COUNT(*) balls
+		         SUM(runs) runs, SUM(faced) balls
 		  FROM seg GROUP BY match_id, innings, stand
 		),
 		ours AS (

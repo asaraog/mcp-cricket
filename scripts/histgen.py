@@ -8,6 +8,18 @@ and venue names are interned so the deliveries table stays compact, and
 batter/bowler are indexed because analytics queries (phase splits,
 leaderboards) filter on them — without those indexes a lookup is a full
 scan of millions of rows.
+
+The canonical copy of this script is
+asaraog/cricket-history-data/scripts/histgen.py (commit f8ba240), where
+the release the server downloads is built. This copy must stay identical
+to it: the schema here is what internal/history reads.
+
+The two trailing columns of deliveries, wide and noball, came after
+staging answered "who top scored in the 2024 T20 world cup final" with
+"Virat Kohli 76 off 62": the server counted rows as balls faced, and
+three of Kohli's rows were wides. A wide is not a ball faced; a no-ball
+is, but is not a legal ball bowled. The server reads the columns when
+the file has them and counts rows on the v1 file, which has neither.
 """
 import json, sys, zipfile, glob, os, sqlite3
 
@@ -26,7 +38,8 @@ CREATE TABLE deliveries (
   match_id TEXT, innings INTEGER, over INTEGER, ball INTEGER,
   batter INTEGER, bowler INTEGER,
   runs_batter INTEGER, runs_extras INTEGER,
-  wicket_kind TEXT, player_out INTEGER
+  wicket_kind TEXT, player_out INTEGER,
+  wide INTEGER, noball INTEGER
 );
 """)
 ids = {}
@@ -87,12 +100,15 @@ for zf in zips:
             for ov in inn.get("overs", []):
                 for bi, d in enumerate(ov.get("deliveries", [])):
                     w = (d.get("wickets") or [{}])[0]
+                    extras = d.get("extras") or {}
                     rows.append((mid, i + 1, ov.get("over", 0) + 1, bi + 1,
                                  nid(d.get("batter")), nid(d.get("bowler")),
                                  d.get("runs", {}).get("batter", 0),
                                  d.get("runs", {}).get("extras", 0),
-                                 w.get("kind", ""), nid(w.get("player_out"))))
-        db.executemany("INSERT INTO deliveries VALUES (?,?,?,?,?,?,?,?,?,?)", rows)
+                                 w.get("kind", ""), nid(w.get("player_out")),
+                                 1 if extras.get("wides", 0) > 0 else 0,
+                                 1 if extras.get("noballs", 0) > 0 else 0))
+        db.executemany("INSERT INTO deliveries VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", rows)
         nmatches += 1
 db.executescript("""
 CREATE INDEX idx_del_match ON deliveries(match_id, innings, over);
