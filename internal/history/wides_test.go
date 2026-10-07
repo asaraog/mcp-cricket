@@ -42,7 +42,7 @@ func TestWidesAreNotBallsFaced(t *testing.T) {
 // with Miller's 17 Pandya's 37 legal balls over 38 rows.
 func TestBowlersBallsAreLegalOnes(t *testing.T) {
 	balls := func(kind string) map[string]int {
-		ls, ok := Leaders("t20", "2024", kind, 50)
+		ls, ok := Leaders("t20", "2024", kind, "", 50)
 		if !ok {
 			t.Fatalf("no %s leaders", kind)
 		}
@@ -83,17 +83,17 @@ func TestOldArchiveWithoutTheColumnCountsEveryRow(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	old, wide, err := openFile(path)
+	old, cols, err := openFile(path)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if wide {
+	if cols.wide {
 		t.Fatal("the old-shape fixture reports a wide column")
 	}
-	savedDB, savedWide := db, hasWide
-	db, hasWide = old, wide
+	savedDB, savedWide, savedGender := db, hasWide, hasGender
+	db, hasWide, hasGender = old, cols.wide, cols.gender
 	t.Cleanup(func() {
-		db, hasWide = savedDB, savedWide
+		db, hasWide, hasGender = savedDB, savedWide, savedGender
 		old.Close()
 	})
 	m, ok := FindMatch("who top scored in the 2024 T20 world cup final", nil)
@@ -109,7 +109,7 @@ func TestOldArchiveWithoutTheColumnCountsEveryRow(t *testing.T) {
 	if got, want := PlayerLine(m, "Virat Kohli in the final"), "  bat: V Kohli 76 off 62, out caught\n"; got != want {
 		t.Errorf("PlayerLine:\n got: %q\nwant: %q", got, want)
 	}
-	if ls, ok := Leaders("t20", "2024", "bowling", 50); !ok {
+	if ls, ok := Leaders("t20", "2024", "bowling", "", 50); !ok {
 		t.Error("no bowling leaders on the old shape")
 	} else {
 		for _, l := range ls {

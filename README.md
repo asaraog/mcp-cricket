@@ -85,8 +85,8 @@ Most sports MCP servers wrap a scores API. This one ships analysis:
 | `cricket_match_archive` | Scorecard for an archived match, searched by teams / league / year |
 | `cricket_phase_stats` | Batting and bowling split by powerplay, middle overs and death |
 | `cricket_venue_stats` | Ground report: average first-innings score, chase win rate |
-| `cricket_leaders` | League and season leaderboards for runs or wickets |
-| `cricket_team_form` | A team's recent archived results |
+| `cricket_leaders` | League and season leaderboards for runs or wickets. `t20i` is the T20Is alone; `t20` adds the domestic T20s that have no code of their own. `t20i`, `t20`, `odi`, `test`, `bbl`, `cpl` and `hundred` hold men's and women's games and read the men's unless `gender` is `female` |
+| `cricket_team_form` | A team's recent archived results. Optional `format` (`t20`, `odi`, `test`) and `gender` (`male`, `female`) keep one side's games: the archive gives a country's men's and women's teams one name |
 | `cricket_dismissals` | How a batter gets out, or how a bowler takes wickets |
 | `cricket_discipline` | Dot-ball and boundary percentage, the numbers no scorecard shows |
 | `cricket_situational` | A batter's record batting first versus chasing |
@@ -184,6 +184,12 @@ its `deliveries` table carries `wide` and `noball` columns, so balls faced
 leave out wides and a bowler's balls leave out wides and no-balls, as a
 scorecard counts them. An archive built before that has neither column; the
 server reads it as before, counting every row as a ball.
+
+Since 2026-10-07 its `matches` table also carries a `gender` column, `male`
+or `female` as Cricsheet records it. `cricket_leaders` and
+`cricket_team_form` filter on it. Older archives (the v1 file and the
+2026-10-06 rebuild) still work: without the column, a game's gender is read
+off its event name, which says "Women" for Cricsheet's women's events.
 
 ## ⚙️ Configuration
 

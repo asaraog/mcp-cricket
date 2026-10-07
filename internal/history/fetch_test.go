@@ -52,7 +52,7 @@ func newReleaseServer(t *testing.T) *releaseServer {
 					`{"id":202,"name":"history-full.db.gz","url":"%s/assets/202"}]}`, rs.URL, rs.URL)
 			}
 			_, _ = w.Write([]byte(body))
-		case "/assets/202", "/assets/617060111", "/assets/override":
+		case "/assets/202", "/assets/617455143", "/assets/override":
 			rs.downloads.Add(1)
 			if r.Header.Get("Accept") != "application/octet-stream" {
 				w.WriteHeader(http.StatusUnsupportedMediaType)
@@ -71,7 +71,7 @@ func newReleaseServer(t *testing.T) *releaseServer {
 	t.Setenv("HISTORY_DB_TOKEN", "tok")
 	t.Setenv("HISTORY_DB_URL", "")
 	savedLatest, savedDefault := latestReleaseURL, defaultAssetURL
-	latestReleaseURL, defaultAssetURL = rs.URL+"/releases/latest", rs.URL+"/assets/617060111"
+	latestReleaseURL, defaultAssetURL = rs.URL+"/releases/latest", rs.URL+"/assets/617455143"
 	t.Cleanup(func() { latestReleaseURL, defaultAssetURL = savedLatest, savedDefault })
 	return rs
 }
@@ -120,12 +120,12 @@ func TestFetchDBTakesTheLatestReleasesFullArchive(t *testing.T) {
 func TestFetchDBFallsBackToThePinnedAsset(t *testing.T) {
 	rs := newReleaseServer(t)
 	rs.latestStatus = http.StatusInternalServerError
-	if got, side := fetched(t); got != "/assets/617060111" || side != "617060111\n" {
+	if got, side := fetched(t); got != "/assets/617455143" || side != "617455143\n" {
 		t.Errorf("after a failed lookup downloaded %q (sidecar %q), want the pinned asset", got, side)
 	}
 	rs.latestStatus = http.StatusOK
 	rs.latestBody = `{"tag_name":"v3","assets":[{"id":301,"name":"history.db.gz","url":"` + rs.URL + `/assets/301"}]}`
-	if got, _ := fetched(t); got != "/assets/617060111" {
+	if got, _ := fetched(t); got != "/assets/617455143" {
 		t.Errorf("with no full archive on the release downloaded %q, want the pinned asset", got)
 	}
 }
