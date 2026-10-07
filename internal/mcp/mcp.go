@@ -34,8 +34,11 @@ const (
 // cricket_live_matches. 0.3.0 adds cricket_minor_league_info, the league's
 // history, teams, grounds and players, to match the hosted server's 17
 // tools; here it points at the hosted server, which holds that data. A
-// client still holding 0.2.0's list would never offer it.
-var ServerVersion = "0.3.0"
+// client still holding 0.2.0's list would never offer it. 0.4.0 is the
+// archive rebuilt with wide and noball columns, balls faced and bowled
+// counted from them, tournament finals resolved by name, and the phase
+// splits counting overs from 1: the same tools, new answers.
+var ServerVersion = "0.4.0"
 
 // ---------------------------------------------------------------- protocol
 
