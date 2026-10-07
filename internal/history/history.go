@@ -1,8 +1,8 @@
 // Package history answers questions about past matches from a per-delivery
 // SQLite database built out of Cricsheet archives (scripts/histgen.py,
 // whose canonical copy is asaraog/cricket-history-data/scripts/histgen.py,
-// commit f8ba240, where the release is built; the copy here stays
-// identical to it).
+// commit fbb4344, where the release is built; the copy here stays
+// byte-identical to it).
 // The DB is not in the binary; when the file is absent the archive tools
 // say so rather than inventing an answer.
 package history
@@ -36,6 +36,11 @@ var (
 	// columns histgen.py writes since 2026-10-06. The v1 release has
 	// neither, and on it every row counts as a ball.
 	hasWide bool
+	// hasGender says the matches table carries the gender column
+	// histgen.py writes since 2026-10-07, "male" or "female" from
+	// Cricsheet. Files built before it have none, and a gender is read
+	// off the event name there (formatGender).
+	hasGender bool
 )
 
 // faced is 1 on a row the batter faced and 0 on a wide, for the deliveries
@@ -80,16 +85,22 @@ func legalBalls(d string) string {
 // release history-20261007-37551550048) is a new release with a new asset
 // id, and a server that downloaded one id would have gone on with the v1
 // file. A first run asks the data repo for its latest release and
-// downloads the history-full.db.gz on it; the id below, the rebuilt
-// archive's, is where it goes when that lookup fails for any reason.
-// Variables, so a test can point them at its own server.
+// downloads the history-full.db.gz on it; the id below is where it goes
+// when that lookup fails for any reason. It is the archive rebuilt with
+// the gender column as well (2026-10-07, release
+// history-20261007-37566870453, built by histgen.py at fbb4344): pinned
+// to the wide-only rebuild, 617060111, a first run whose lookup failed
+// would have had no gender column, and cricket_team_form and
+// cricket_leaders would have told a side's men's games from its women's
+// by the event name alone. Variables, so a test can point them at its
+// own server.
 var (
-	defaultAssetURL  = "https://api.github.com/repos/asaraog/cricket-history-data/releases/assets/617060111"
+	defaultAssetURL  = "https://api.github.com/repos/asaraog/cricket-history-data/releases/assets/617455143"
 	latestReleaseURL = "https://api.github.com/repos/asaraog/cricket-history-data/releases/latest"
 )
 
 // defaultAssetID is the asset defaultAssetURL serves, for the sidecar.
-const defaultAssetID = 617060111
+const defaultAssetID = 617455143
 
 // assetName is the full archive's file name on every release.
 const assetName = "history-full.db.gz"
@@ -289,14 +300,19 @@ func open() {
 	if !ok {
 		return
 	}
-	d, wide, err := openFile(path)
+	d, cols, err := openFile(path)
 	if err != nil {
 		return
 	}
-	if wide {
+	if cols.wide {
 		log.Printf("history: %s has the wide column; wides are not balls faced", path)
 	} else {
 		log.Printf("history: %s has no wide column (v1); every row counts as a ball", path)
+	}
+	if cols.gender {
+		log.Printf("history: %s has the gender column", path)
+	} else {
+		log.Printf("history: %s has no gender column; gender is read off the event name", path)
 	}
 	rows, err := d.Query(`SELECT DISTINCT n.name FROM matches m JOIN names n ON n.id IN (m.team1, m.team2)`)
 	if err != nil {
@@ -329,16 +345,23 @@ func open() {
 			teamWords[w] = ts[0]
 		}
 	}
-	hasWide = wide
+	hasWide, hasGender = cols.wide, cols.gender
 	db = d
 }
 
+// columns says which of the columns histgen.py added after the v1
+// release an archive carries.
+type columns struct {
+	wide   bool // deliveries.wide and deliveries.noball, since 2026-10-06
+	gender bool // matches.gender, since 2026-10-07
+}
+
 // openFile opens an archive read-only and reports whether its deliveries
-// table carries the wide column.
-func openFile(path string) (*sql.DB, bool, error) {
+// table carries the wide column and its matches table the gender column.
+func openFile(path string) (*sql.DB, columns, error) {
 	d, err := sql.Open("sqlite", path+"?mode=ro")
 	if err != nil {
-		return nil, false, err
+		return nil, columns{}, err
 	}
 	// Bounded pool: each connection carries its own page cache, so
 	// unbounded readers would be a memory hazard on a small instance.
@@ -346,19 +369,27 @@ func openFile(path string) (*sql.DB, bool, error) {
 	d.SetMaxOpenConns(8)
 	d.SetMaxIdleConns(4)
 	d.SetConnMaxIdleTime(5 * time.Minute)
-	wide := false
-	if rows, err := d.Query(`PRAGMA table_info(deliveries)`); err == nil {
-		for rows.Next() {
-			var cid, notnull, pk int
-			var name, typ string
-			var dflt sql.NullString
-			if rows.Scan(&cid, &name, &typ, &notnull, &dflt, &pk) == nil && name == "wide" {
-				wide = true
-			}
-		}
-		rows.Close()
+	return d, columns{wide: hasColumn(d, "deliveries", "wide"), gender: hasColumn(d, "matches", "gender")}, nil
+}
+
+// hasColumn reports whether a table of the archive has the column, from
+// PRAGMA table_info. The table name is a constant of this package.
+func hasColumn(d *sql.DB, table, column string) bool {
+	rows, err := d.Query(`PRAGMA table_info(` + table + `)`)
+	if err != nil {
+		return false
 	}
-	return d, wide, nil
+	defer rows.Close()
+	found := false
+	for rows.Next() {
+		var cid, notnull, pk int
+		var name, typ string
+		var dflt sql.NullString
+		if rows.Scan(&cid, &name, &typ, &notnull, &dflt, &pk) == nil && name == column {
+			found = true
+		}
+	}
+	return found
 }
 
 // Enabled reports whether the history DB is present. The first call blocks
@@ -463,6 +494,34 @@ func TeamsIn(msg string) []string {
 		}
 	}
 	return kept
+}
+
+// ArchiveTeam is the archive's own name for a side as a feed or a reader
+// names it: the same name in any case, else the one archive team whose
+// name holds it ("United States" for "United States of America"), else the
+// first team TeamsIn finds in it.
+func ArchiveTeam(name string) (string, bool) {
+	if !Enabled() || strings.TrimSpace(name) == "" {
+		return "", false
+	}
+	low := strings.ToLower(strings.TrimSpace(name))
+	var within []string
+	for _, t := range teams {
+		tl := strings.ToLower(t)
+		if tl == low {
+			return t, true
+		}
+		if strings.Contains(tl, low) {
+			within = append(within, t)
+		}
+	}
+	if len(within) == 1 {
+		return within[0], true
+	}
+	if hits := TeamsIn(name); len(hits) > 0 {
+		return hits[0], true
+	}
+	return "", false
 }
 
 // Match is one archived game.

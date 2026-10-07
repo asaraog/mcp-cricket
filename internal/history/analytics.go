@@ -165,17 +165,44 @@ type Leader struct {
 }
 
 // Leaders ranks batters by runs or bowlers by wickets for a league and
-// optional season year.
-func Leaders(league, year, kind string, limit int) ([]Leader, bool) {
+// optional season year, of one gender when it is set (formatGender). ""
+// reads both.
+//
+// histgen.py files a game it knows no league for under its match type, so
+// "t20" holds every country's men's and women's T20Is together, and a
+// women's innings ranks among the men's runs. A league's code is only as
+// single-gender as its event names: the Women's Big Bash League is filed
+// under "bbl", and staging answered "who has the most runs in the big
+// bash" with BL Mooney and EA Perry on 2026-10-07.
+//
+// "t20" holds every domestic T20 histgen.py knows no league for as well:
+// Cricsheet types the Vitality Blast and the Syed Mushtaq Ali Trophy
+// "T20", as it types a T20I, and staging's form for Surrey on 2026-10-06
+// was eight Vitality Blast Men games. "t20i" is the T20Is alone: the
+// games of "t20" between two international sides (bothInternational).
+// Prod and staging, 2026-10-06, "who has the most wickets in T20
+// internationals in 2025" had no list to read, and "t20" would have
+// given the counties' and the states' bowlers as the T20I leaders. "odi"
+// and "test" need no such filter: Cricsheet types a domestic one-day game
+// "ODM" and a first-class one "MDM".
+func Leaders(league, year, kind, gender string, limit int) ([]Leader, bool) {
 	if !Enabled() || limit <= 0 {
 		return nil, false
 	}
 	where := "m.league = ?"
 	args := []any{strings.ToLower(league)}
+	if strings.EqualFold(league, "t20i") {
+		cond, cargs := bothInternational("m.")
+		where = "m.league = 't20'" + cond
+		args = cargs
+	}
 	if year != "" {
 		where += " AND m.date LIKE ?"
 		args = append(args, year+"%")
 	}
+	filter, fargs := formatGender("m.", "", gender)
+	where += filter
+	args = append(args, fargs...)
 	var q string
 	if kind == "bowling" {
 		q = `SELECT n.name,
@@ -215,23 +242,162 @@ func Leaders(league, year, kind string, limit int) ([]Leader, bool) {
 	return out, len(out) > 0
 }
 
+// internationalSides are the sides Cricsheet's international games are
+// played by, as it names them: the country column of
+// internal/rag/data/playerstats.json (cmd/statsgen, Cricsheet through
+// 2026-09-17), which is the side each player has played the most
+// team_type "international" games for, composite World XIs left out.
+// histgen.py does not store the team type, so a game is an international
+// when both its sides are on this list. Barbados is on it for its women's
+// Commonwealth Games T20Is, and its domestic opponents, Jamaica or
+// Guyana, are not. Cricsheet publishes no Afghanistan men's matches
+// (cmd/statsgen), and Afghanistan is on the list so that its games count
+// the day they are added.
+var internationalSides = []string{
+	"Afghanistan", "Argentina", "Australia", "Austria", "Bahamas", "Bahrain",
+	"Bangladesh", "Barbados", "Belgium", "Belize", "Bermuda", "Bhutan",
+	"Botswana", "Brazil", "Bulgaria", "Cambodia", "Cameroon", "Canada",
+	"Cayman Islands", "Chile", "China", "Cook Islands", "Costa Rica", "Croatia",
+	"Cyprus", "Czech Republic", "Denmark", "England", "Estonia", "Eswatini",
+	"Fiji", "Finland", "France", "Gambia", "Germany", "Ghana",
+	"Gibraltar", "Greece", "Guernsey", "Hong Kong", "Hungary", "India",
+	"Indonesia", "Ireland", "Isle of Man", "Israel", "Italy", "Ivory Coast",
+	"Japan", "Jersey", "Kenya", "Kuwait", "Lesotho", "Luxembourg",
+	"Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Mexico",
+	"Mongolia", "Mozambique", "Myanmar", "Namibia", "Nepal", "Netherlands",
+	"New Zealand", "Nigeria", "Norway", "Oman", "Pakistan", "Panama",
+	"Papua New Guinea", "Philippines", "Portugal", "Qatar", "Romania", "Rwanda",
+	"Samoa", "Saudi Arabia", "Scotland", "Serbia", "Seychelles", "Sierra Leone",
+	"Singapore", "Slovenia", "South Africa", "South Korea", "Spain", "Sri Lanka",
+	"St Helena", "Suriname", "Swaziland", "Sweden", "Switzerland", "Tanzania",
+	"Thailand", "Timor-Leste", "Turkey", "Turks and Caicos Island", "Uganda", "United Arab Emirates",
+	"United States of America", "Uzbekistan", "Vanuatu", "West Indies", "Zambia", "Zimbabwe",
+}
+
+// bothInternational is the SQL condition, " AND ..." on the matches alias
+// m ("m."), that keeps a game between two internationalSides, and its
+// arguments. A game with one innings has no team2, since histgen.py reads
+// the sides off the innings, and its innings counts.
+func bothInternational(m string) (string, []any) {
+	marks := strings.TrimSuffix(strings.Repeat("?,", len(internationalSides)), ",")
+	sides := "(SELECT id FROM names WHERE name IN (" + marks + "))"
+	args := make([]any, 0, 2*len(internationalSides))
+	for i := 0; i < 2; i++ {
+		for _, s := range internationalSides {
+			args = append(args, s)
+		}
+	}
+	return " AND " + m + "team1 IN " + sides + " AND (" + m + "team2 IS NULL OR " + m + "team2 IN " + sides + ")", args
+}
+
 // FormLine is one recent result for a team.
 type FormLine struct {
 	Date, Opponent, Result, Event string
 }
 
-// TeamForm returns a team's most recent archived results.
-func TeamForm(team string, limit int) ([]FormLine, bool) {
+// NormFormat is "t20", "odi" or "test" for the ways a caller names a
+// format, and "" for any other.
+func NormFormat(s string) string {
+	switch strings.ToLower(strings.TrimSpace(s)) {
+	case "t20", "t20s", "t20i", "t20is", "twenty20":
+		return "t20"
+	case "odi", "odis", "one-day", "one day", "list a", "list-a":
+		return "odi"
+	case "test", "tests", "first-class", "first class", "multi-day":
+		return "test"
+	}
+	return ""
+}
+
+// NormGender is "male" or "female", as Cricsheet writes them, for the
+// ways a caller names one, and "" for any other.
+func NormGender(s string) string {
+	switch strings.ToLower(strings.TrimSpace(s)) {
+	case "male", "men", "men's", "mens", "man":
+		return "male"
+	case "female", "women", "women's", "womens", "woman":
+		return "female"
+	}
+	return ""
+}
+
+// ScopeLabel names the games a format and a gender keep, n of them:
+// "men's T20s", "women's ODI", "Tests". "" when neither is set.
+func ScopeLabel(format, gender string, n int) string {
+	what := map[string]string{"t20": "T20", "odi": "ODI", "test": "Test"}[NormFormat(format)]
+	who := map[string]string{"male": "men's", "female": "women's"}[NormGender(gender)]
+	switch {
+	case what == "" && who == "":
+		return ""
+	case what == "":
+		what = "game"
+	}
+	if n != 1 {
+		what += "s"
+	}
+	if who == "" {
+		return what
+	}
+	return who + " " + what
+}
+
+// formatGender is the SQL condition, " AND ..." on the matches alias m
+// ("m." or "m2."), that keeps one format and one gender, and its
+// arguments. "" for either keeps every one.
+//
+// Cricsheet names India's men and India's women "India", and a side's
+// last ten games were every format as well, so the in-form list for a
+// men's T20I could be topped by a Test 150 or a women's 80. Format is the
+// overs histgen.py writes: 20 for a T20, 50 for a one-day game, 0 for a
+// multi-day one. Gender is the matches column histgen.py writes since
+// 2026-10-07. A file built before it has no such column, and the event
+// name stands in there. That is imperfect: a women's game whose event
+// does not say "Women" (a blank event, a series named for the venue)
+// reads as a men's.
+func formatGender(m, format, gender string) (string, []any) {
+	var conds []string
+	var args []any
+	switch NormFormat(format) {
+	case "t20":
+		conds = append(conds, m+"overs = 20")
+	case "odi":
+		conds = append(conds, m+"overs = 50")
+	case "test":
+		conds = append(conds, m+"overs = 0")
+	}
+	switch g := NormGender(gender); {
+	case g == "":
+	case hasGender:
+		conds = append(conds, m+"gender = ?")
+		args = append(args, g)
+	case g == "female":
+		conds = append(conds, "LOWER(COALESCE("+m+"event,'')) LIKE '%women%'")
+	default:
+		conds = append(conds, "LOWER(COALESCE("+m+"event,'')) NOT LIKE '%women%'")
+	}
+	if len(conds) == 0 {
+		return "", nil
+	}
+	return " AND " + strings.Join(conds, " AND "), args
+}
+
+// TeamForm returns a team's most recent archived results, of one format
+// and one gender when they are set (formatGender). With neither set it
+// reads every game, as it always has.
+func TeamForm(team, format, gender string, limit int) ([]FormLine, bool) {
 	if !Enabled() || limit <= 0 {
 		return nil, false
 	}
+	filter, fargs := formatGender("m.", format, gender)
+	args := append([]any{team, team}, fargs...)
+	args = append(args, limit)
 	rows, err := db.QueryContext(aqctx(), `
 		SELECT m.date, t1.name, t2.name, COALESCE(w.name,''), COALESCE(m.event,'')
 		FROM matches m
 		JOIN names t1 ON t1.id=m.team1 JOIN names t2 ON t2.id=m.team2
 		LEFT JOIN names w ON w.id=m.winner
-		WHERE LOWER(t1.name)=LOWER(?) OR LOWER(t2.name)=LOWER(?)
-		ORDER BY m.date DESC LIMIT ?`, team, team, limit)
+		WHERE (LOWER(t1.name)=LOWER(?) OR LOWER(t2.name)=LOWER(?))`+filter+`
+		ORDER BY m.date DESC LIMIT ?`, args...)
 	if err != nil {
 		return nil, false
 	}
@@ -256,6 +422,94 @@ func TeamForm(team string, limit int) ([]FormLine, bool) {
 		out = append(out, FormLine{Date: date, Opponent: opp, Result: res, Event: event})
 	}
 	return out, len(out) > 0
+}
+
+// KeyPlayer is one of a side's leading batters or bowlers over its recent
+// archived games: runs, balls faced and strike rate for a batter; wickets,
+// legal balls and economy for a bowler. Innings is how many he batted or
+// bowled in.
+type KeyPlayer struct {
+	Name    string
+	Innings int
+	Runs    int
+	Balls   int
+	SR      float64
+	Wkts    int
+	Econ    float64
+}
+
+// TeamKeyPlayers is a side's top five run scorers and top five wicket
+// takers over its last `matches` archived games of one format and one
+// gender, the games TeamForm reads with the same three, by Cricsheet
+// name. The side batting an innings is team1 in the odd innings and team2
+// in the even ones, as histgen.py writes them.
+//
+// Prod, 2026-10-05, USA v UAE selected, "can you create dream11 teams":
+// "that's not something this service does", then "I don't pull live
+// match lineups or team sheets" for "but you can fetch lineup and stats
+// right". The reader wanted each side's in-form names, and the archive
+// held them. Read over every game a side played, India's in-form list for
+// a men's T20I could be topped by a Test 150 or a women's 80: Cricsheet
+// calls both of India's sides "India".
+func TeamKeyPlayers(team, format, gender string, matches int) (batters, bowlers []KeyPlayer, ok bool) {
+	if !Enabled() || matches <= 0 {
+		return nil, nil, false
+	}
+	filter, fargs := formatGender("m2.", format, gender)
+	recent := `d.match_id IN (SELECT m2.id FROM matches m2
+	        JOIN names t1 ON t1.id=m2.team1 JOIN names t2 ON t2.id=m2.team2
+	        WHERE (LOWER(t1.name)=LOWER(?) OR LOWER(t2.name)=LOWER(?))` + filter + `
+	        ORDER BY m2.date DESC LIMIT ?)`
+	const side = `(SELECT id FROM names WHERE LOWER(name)=LOWER(?))`
+	args := append([]any{team, team}, fargs...)
+	args = append(args, matches, team)
+	rows, err := db.QueryContext(aqctx(), `
+		SELECT n.name, SUM(d.runs_batter) r, `+ballsFaced("d.")+` balls,
+		       COUNT(DISTINCT d.match_id || '/' || d.innings)
+		FROM deliveries d JOIN matches m ON m.id=d.match_id
+		JOIN names n ON n.id=d.batter
+		WHERE `+recent+`
+		  AND (CASE WHEN d.innings % 2 = 1 THEN m.team1 ELSE m.team2 END) = `+side+`
+		GROUP BY n.name ORDER BY r DESC, balls ASC LIMIT 5`, args...)
+	if err != nil {
+		return nil, nil, false
+	}
+	for rows.Next() {
+		var k KeyPlayer
+		if err := rows.Scan(&k.Name, &k.Runs, &k.Balls, &k.Innings); err != nil {
+			continue
+		}
+		if k.Balls > 0 {
+			k.SR = float64(k.Runs) * 100 / float64(k.Balls)
+		}
+		batters = append(batters, k)
+	}
+	rows.Close()
+	rows, err = db.QueryContext(aqctx(), `
+		SELECT n.name, SUM(CASE WHEN d.wicket_kind NOT IN ('','run out') THEN 1 ELSE 0 END) w,
+		       `+legalBalls("d.")+` balls, SUM(d.runs_batter+d.runs_extras) conceded,
+		       COUNT(DISTINCT d.match_id || '/' || d.innings)
+		FROM deliveries d JOIN matches m ON m.id=d.match_id
+		JOIN names n ON n.id=d.bowler
+		WHERE `+recent+`
+		  AND (CASE WHEN d.innings % 2 = 1 THEN m.team2 ELSE m.team1 END) = `+side+`
+		GROUP BY n.name ORDER BY w DESC, conceded ASC LIMIT 5`, args...)
+	if err != nil {
+		return batters, nil, len(batters) > 0
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var k KeyPlayer
+		var conceded int
+		if err := rows.Scan(&k.Name, &k.Wkts, &k.Balls, &conceded, &k.Innings); err != nil {
+			continue
+		}
+		if k.Balls > 0 {
+			k.Econ = float64(conceded) * 6 / float64(k.Balls)
+		}
+		bowlers = append(bowlers, k)
+	}
+	return batters, bowlers, len(batters) > 0 || len(bowlers) > 0
 }
 
 // describeSplits renders phase splits as readable lines.

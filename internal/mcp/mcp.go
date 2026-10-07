@@ -273,21 +273,24 @@ func buildTools() []Tool {
 		},
 		{
 			Name:        "cricket_leaders",
-			Description: "Leaderboards for a league and optional season: most runs or most wickets, from ball-by-ball archives. Leagues include mlc, ipl, bbl, psl, cpl and international cricket.",
+			Description: "Leaderboards for a league and optional season: most runs or most wickets, from ball-by-ball archives. Leagues include mlc, ipl, bbl, psl, cpl, hundred and international cricket (t20i, odi, test). t20 is the T20Is together with every domestic T20 that has no code of its own (the Vitality Blast, the Syed Mushtaq Ali Trophy); t20i is the T20Is alone. Cricsheet publishes no Afghanistan men's matches, so the men's t20i, odi and test lists have none of Afghanistan's players. t20i, t20, odi, test, bbl, cpl and hundred hold men's and women's games (the WBBL is bbl, the WCPL cpl) and read the men's unless gender says otherwise.",
 			InputSchema: obj(map[string]any{
-				"league": str("league code, e.g. 'mlc', 'ipl', 'bbl'"),
+				"league": str("league code, e.g. 'mlc', 'ipl', 'bbl', 't20i'"),
 				"year":   str("optional season year, e.g. '2026'"),
 				"kind":   str("'batting' (default) or 'bowling'"),
 				"limit":  inte("how many players to return (default 10)"),
+				"gender": str("optional: 'male' or 'female'. t20i, t20, odi, test, bbl, cpl and hundred read the men's when it is omitted; other leagues read every game"),
 			}, "league"),
 			handler: leadersTool,
 		},
 		{
 			Name:        "cricket_team_form",
-			Description: "A team's most recent archived results — opponent, outcome, and match event — for reading current form.",
+			Description: "A team's most recent archived results — opponent, outcome, and match event — for reading current form. The archive gives a country's men's and women's sides one name. Pass gender, and format, to read one side's games.",
 			InputSchema: obj(map[string]any{
-				"team":  str("team name, e.g. 'San Francisco Unicorns'"),
-				"limit": inte("how many recent matches (default 8)"),
+				"team":   str("team name, e.g. 'San Francisco Unicorns'"),
+				"limit":  inte("how many recent matches (default 8)"),
+				"format": str("optional: 't20', 'odi' or 'test'. Omit for every format"),
+				"gender": str("optional: 'male' or 'female'. Omit for both"),
 			}, "team"),
 			handler: teamFormTool,
 		},
@@ -559,6 +562,22 @@ func venueStatsTool(args map[string]any) (string, error) {
 		r.Venue, r.Matches, r.AvgFirst, r.HighestFirst, chasePct, r.ChaseWins, r.Decided), nil
 }
 
+// bothGenderLeagues are the league codes histgen.py files men's and
+// women's games under together. A game it knows no league for goes under
+// its match type, so "t20" holds every country's T20Is. A league goes by
+// its event name, and the Women's Big Bash League, the Women's Caribbean
+// Premier League and the Hundred's women's competition hold "big bash",
+// "caribbean premier" and "hundred": staging answered "who has the most
+// runs in the big bash" with BL Mooney and EA Perry on 2026-10-07.
+// cricket_leaders reads the men's of these unless gender says otherwise.
+// Every other league reads every game, as it always has. "t20i" is the
+// T20Is of "t20" (history.Leaders), and holds both too.
+var bothGenderLeagues = map[string]bool{"t20i": true, "t20": true, "odi": true, "test": true, "bbl": true, "cpl": true, "hundred": true}
+
+// leagueTitles name a league in a leaders header where its code in
+// capitals is not what a reader calls it: "Big Bash men's leaders".
+var leagueTitles = map[string]string{"bbl": "Big Bash", "hundred": "The Hundred"}
+
 func leadersTool(args map[string]any) (string, error) {
 	league := argStr(args, "league")
 	if league == "" {
@@ -572,8 +591,19 @@ func leadersTool(args map[string]any) (string, error) {
 	if !ok || limit <= 0 || limit > 50 {
 		limit = 10
 	}
-	rows, ok := history.Leaders(league, argStr(args, "year"), kind, limit)
+	gender := argStr(args, "gender")
+	if gender != "" && history.NormGender(gender) == "" {
+		return "", fmt.Errorf("gender %q: use male or female", gender)
+	}
+	if gender == "" && bothGenderLeagues[strings.ToLower(league)] {
+		gender = "male"
+	}
+	who := map[string]string{"male": "men's", "female": "women's"}[history.NormGender(gender)]
+	rows, ok := history.Leaders(league, argStr(args, "year"), kind, gender, limit)
 	if !ok {
+		if who != "" {
+			return "", fmt.Errorf("no archived %s data for league %q", who, league)
+		}
 		return "", fmt.Errorf("no archived data for league %q", league)
 	}
 	var b strings.Builder
@@ -581,7 +611,14 @@ func leadersTool(args map[string]any) (string, error) {
 	if season == "" {
 		season = "all seasons"
 	}
-	fmt.Fprintf(&b, "%s leaders — %s, %s\n", strings.ToUpper(league), kind, season)
+	title := strings.ToUpper(league)
+	if name, ok := leagueTitles[strings.ToLower(league)]; ok {
+		title = name
+	}
+	if who != "" {
+		title += " " + who
+	}
+	fmt.Fprintf(&b, "%s leaders — %s, %s\n", title, kind, season)
 	for i, l := range rows {
 		if kind == "bowling" {
 			fmt.Fprintf(&b, "%2d. %s — %d wickets, economy %.2f\n", i+1, l.Name, l.Wkts, l.Econ)
@@ -605,12 +642,29 @@ func teamFormTool(args map[string]any) (string, error) {
 	if !ok || limit <= 0 || limit > 30 {
 		limit = 8
 	}
-	rows, ok := history.TeamForm(team, limit)
+	// The archive names India's men and India's women "India", and a
+	// side's last games were every format of both. format and gender keep
+	// one; with neither the tool reads every game, as it always has.
+	format, gender := argStr(args, "format"), argStr(args, "gender")
+	if format != "" && history.NormFormat(format) == "" {
+		return "", fmt.Errorf("format %q: use t20, odi or test", format)
+	}
+	if gender != "" && history.NormGender(gender) == "" {
+		return "", fmt.Errorf("gender %q: use male or female", gender)
+	}
+	rows, ok := history.TeamForm(team, format, gender, limit)
 	if !ok {
+		if scope := history.ScopeLabel(format, gender, 0); scope != "" {
+			return "", fmt.Errorf("no archived %s for %q", scope, team)
+		}
 		return "", fmt.Errorf("no archived matches for %q", team)
 	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "%s — last %d archived matches\n", team, len(rows))
+	if scope := history.ScopeLabel(format, gender, len(rows)); scope != "" {
+		fmt.Fprintf(&b, "%s — last %d archived %s\n", team, len(rows), scope)
+	} else {
+		fmt.Fprintf(&b, "%s — last %d archived matches\n", team, len(rows))
+	}
 	for _, f := range rows {
 		fmt.Fprintf(&b, "%s  %s vs %s", f.Date, strings.ToUpper(f.Result), f.Opponent)
 		if f.Event != "" {
