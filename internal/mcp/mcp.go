@@ -37,8 +37,12 @@ const (
 // client still holding 0.2.0's list would never offer it. 0.4.0 is the
 // archive rebuilt with wide and noball columns, balls faced and bowled
 // counted from them, tournament finals resolved by name, and the phase
-// splits counting overs from 1: the same tools, new answers.
-var ServerVersion = "0.4.0"
+// splits counting overs from 1: the same tools, new answers. 0.5.0 gives
+// cricket_team_form format and gender arguments, and cricket_leaders
+// gender and the t20i code, the men's read unless gender says otherwise,
+// as the hosted server does. A client holding 0.4.0's list would never
+// pass them.
+var ServerVersion = "0.5.0"
 
 // ---------------------------------------------------------------- protocol
 
