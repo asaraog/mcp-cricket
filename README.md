@@ -94,7 +94,7 @@ Most sports MCP servers wrap a scores API. This one ships analysis:
 | `cricket_market_odds` | Live prediction-market prices (Kalshi) beside this model's number |
 | `cricket_live_matches` | Matches live and upcoming right now |
 | `cricket_explain_term` | Any cricket term, with its baseball equivalent |
-| `cricket_minor_league` | Minor League Cricket (US domestic T20): live scores, situation and win chances from Kalshi's live data |
+| `cricket_minor_league` | Minor League Cricket (US domestic T20) and the Atlanta Open T20: live scores, situation and win chances from Kalshi's live data. Atlanta Open batters, bowlers and toss from CricCenter, the tournament's scoring app, on the hosted server only |
 | `cricket_minor_league_info` | Minor League history, teams, grounds and player records. Hosted-only data: the local build points you to the hosted server |
 
 All tools are read-only.
